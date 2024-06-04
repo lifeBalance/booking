@@ -1,0 +1,46 @@
+<script setup>
+</script>
+
+<template>
+  <Header />
+
+  <slot />
+</template>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#just-to-see-the-color-swatches {
+  --color-bg: rgb(24, 24, 26);
+  --color-text-1: rgb(255, 255, 255);
+  --color-text-2: rgb(213, 220, 231);
+  --color-text-3: rgb(96, 96, 94);
+  --color-accent-1: rgb(253, 230, 138);
+  --color-accent-2: rgb(255, 0, 0);
+  --color-accent-3: rgb(29, 137, 232);
+}
+
+:root {
+  --color-bg: 24, 24, 26;
+  --color-text-1: 255, 255, 255;
+  --color-text-2: 213, 220, 231;
+  --color-text-3: 96, 96, 94;
+  --color-accent-1: 253, 230, 138;
+  --color-accent-2: 255, 0, 0;
+  --color-accent-3: 29, 137, 232;
+  --page-width: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: rgb(var(--color-bg));
+  font-family: 'Inter', sans-serif;
+}
+</style>
