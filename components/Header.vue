@@ -48,7 +48,9 @@ function scrollingHandler() {
 
 <template>
   <header :class="{ sticky: mainNavSticky }">
-    <NuxtLink to="/" class="logo"><TargetIcon />Landing + App</NuxtLink>
+    <NuxtLink to="/" class="logo">
+      <TargetIcon class="icon" />Gun Range Demo
+    </NuxtLink>
 
     <nav :aria-expanded="mainNavExpanded">
       <ul>
@@ -116,9 +118,8 @@ header {
   align-items: center;
   gap: 0.5rem;
 
-  [data-icon] {
+  .icon {
     color: rgb(var(--color-text-2));
-    font-size: 3rem;
     transition: all 0.3s ease-in-out;
   }
 
@@ -134,7 +135,7 @@ header {
     font-weight: 600;
   }
 
-  &:hover [data-icon] {
+  &:hover .icon {
     color: rgb(var(--color-accent-1));
   }
 }
@@ -146,47 +147,29 @@ a:visited {
   font-weight: 600;
 }
 
-nav[aria-expanded='false'] {
-  visibility: hidden;
-  opacity: 0;
-  transition: all 0.5s ease-in-out;
-
-  ul {
-    list-style: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    gap: 1.5rem;
-    align-items: center;
-
-    & li:nth-child(1) {
-      border: 1px solid rgb(var(--color-text-1));
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-
-      &:hover {
-        background-color: rgb(var(--color-text-1));
-        a {
-          color: rgb(var(--color-bg));
-        }
-        transition: all 0.3s;
-      }
-    }
-
-    & li:nth-child(2) {
-      color: rgb(var(--color-text-1));
-
-      :hover {
-        text-decoration: underline;
-        text-underline-offset: 0.3rem;
-        transition: all 0.3s;
-      }
-    }
-  }
+nav {
+  transition: all 0.3s ease-in-out;
 }
 
-nav {
-  transition: all 0.5s ease-in-out;
+nav[aria-expanded='false'] {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+
+  ul {
+    transform: translateX(-100%);
+    z-index: 1;
+    min-width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    list-style: none;
+  }
 }
 
 nav[aria-expanded='true'] {
@@ -200,7 +183,7 @@ nav[aria-expanded='true'] {
 
   ul {
     /* Absolute positioning the list, removes the links
-      from the nav, leaving space to the logo. */
+    from the nav, leaving space to the logo. */
     position: absolute;
 
     z-index: 1;
@@ -278,16 +261,43 @@ nav[aria-expanded='true']::before {
   }
 
   nav[aria-expanded='false'] {
+    display: flex;
+    flex-direction: row;
+    transform: translate(100%);
+    position: initial;
+    
     ul {
       list-style: none;
-      /* Reset list of links to normal positioning,
-        and set display flex here (not sure why). */
-      position: initial;
+      gap: 1.5rem;
       display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      & li:nth-child(1) {
+        border: 1px solid rgb(var(--color-text-1));
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+
+        &:hover {
+          background-color: rgb(var(--color-text-1));
+          a {
+            color: rgb(var(--color-bg));
+          }
+          transition: all 0.3s;
+        }
+      }
+
+      & li:nth-child(2) {
+        color: rgb(var(--color-text-1));
+
+        :hover {
+          text-decoration: underline;
+          text-underline-offset: 0.3rem;
+          transition: all 0.3s;
+        }
+      }
     }
-    visibility: visible;
-    opacity: 1;
-  }
+  } // nav
 
   .logo span {
     font-size: 2rem;
