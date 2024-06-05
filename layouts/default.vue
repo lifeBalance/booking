@@ -1,10 +1,15 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <Header />
+  <div class="container">
+    <Header />
 
-  <slot />
+    <main>
+      <slot />
+    </main>
+
+    <Footer companyName="Gun Range Demo" />
+  </div>
 </template>
 
 <style>
@@ -35,12 +40,17 @@
   --page-width: 100%;
 }
 
-body {
+.container {
   margin: 0;
   display: flex;
   flex-direction: column;
+  gap: 2rem;
   min-height: 100vh;
   background-color: rgb(var(--color-bg));
   font-family: 'Inter', sans-serif;
+}
+
+main {
+  flex: 1;
 }
 </style>
