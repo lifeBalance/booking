@@ -1,13 +1,19 @@
 <script setup>
 definePageMeta({
   layout: 'default',
+  pageTransition: {
+    name: 'slide',
+    mode: 'out-in', // default
+  },
 })
 </script>
 
 <template>
-  <Hero />
+  <div>
+    <Hero />
 
-  <Testimonials />
+    <Testimonials />
 
-  <ContactForm />
+    <ContactForm />
+  </div>
 </template>

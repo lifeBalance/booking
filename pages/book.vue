@@ -2,6 +2,14 @@
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker'
 
+definePageMeta({
+  layout: 'default',
+  pageTransition: {
+    name: 'slide',
+    mode: 'out-in' // default
+  }
+})
+
 const date = ref(new Date())
 console.log('date', date)
 

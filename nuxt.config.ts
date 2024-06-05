@@ -2,10 +2,14 @@
 export default defineNuxtConfig({
   devtools: { enabled: true }, 
   modules: ['nuxt-icon'],
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' }
+  },
   routeRules: {
     // Homepage pre-rendered at build time
     '/': { prerender: true },
     // APP renders only on client-side
-    '/app': { ssr: false },
+    // '/book': { ssr: false },
+    '/book': { prerender: true },
   }
 })

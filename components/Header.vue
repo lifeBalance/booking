@@ -60,8 +60,8 @@ function scrollingHandler() {
           >
         </li>
         <li>
-          <NuxtLink class="main-nav-link" to="/app" @click="closeMainNav"
-            >App</NuxtLink
+          <NuxtLink class="main-nav-link" to="/book" @click="closeMainNav"
+            >Book</NuxtLink
           >
         </li>
       </ul>
