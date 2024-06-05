@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 
 const mainNavExpanded = ref(false)
-const headerElement = ref()
+const mainNavSticky = ref(false)
 
 const toggleMainNav = () => {
   console.log('Header: clicked on burger button')
@@ -11,7 +11,7 @@ const toggleMainNav = () => {
   if (mainNavExpanded.value) {
     document.body.style.overflow = 'hidden' // Prevent scrolling
   } else {
-    document.body.style.overflow = 'auto'   // Allow scrolling
+    document.body.style.overflow = 'auto' // Allow scrolling
   }
 }
 
@@ -24,7 +24,6 @@ const closeMainNav = () => {
 onMounted(() => {
   window.addEventListener('scroll', scrollingHandler)
   console.log('mounted')
-  console.log(headerElement.value) // Logs the header element
 })
 
 // Store the last scroll position
@@ -36,22 +35,22 @@ function scrollingHandler() {
     // When the user scrolls down
     lastScrollTop = currentScrollTop
     // console.log('downscroll', currentScrollTop, lastScrollTop)
-    headerElement.value.classList.remove('sticky')
+    mainNavSticky.value = false
   } else {
     // When the user scrolls up
     lastScrollTop = currentScrollTop
     // console.log('upscroll', currentScrollTop, lastScrollTop)
-    headerElement.value.classList.add('sticky')
+    mainNavSticky.value = true
   }
   console.log('scrolling')
 }
 </script>
 
 <template>
-  <header ref="headerElement">
+  <header :class="{ sticky: mainNavSticky }">
     <NuxtLink to="/" class="logo"><TargetIcon />Landing + App</NuxtLink>
 
-    <nav class="main-nav" :aria-expanded="mainNavExpanded">
+    <nav :aria-expanded="mainNavExpanded">
       <ul>
         <li>
           <NuxtLink class="main-nav-link" to="/" @click="closeMainNav"
@@ -147,17 +146,16 @@ a:visited {
   font-weight: 600;
 }
 
-.main-nav[aria-expanded='false'] {
-  display: flex;
+nav[aria-expanded='false'] {
   visibility: hidden;
   opacity: 0;
   transition: all 0.5s ease-in-out;
 
   ul {
     list-style: none;
-    // position: absolute;
-    // top: 0;
-    // left: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
     gap: 1.5rem;
     align-items: center;
 
@@ -187,14 +185,17 @@ a:visited {
   }
 }
 
-.main-nav[aria-expanded='true'] {
+nav {
+  transition: all 0.5s ease-in-out;
+}
+
+nav[aria-expanded='true'] {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 1;
-  // transition: all 0.5s ease-in-out;
   min-height: 100vh;
 
   ul {
@@ -235,7 +236,7 @@ a:visited {
   }
 }
 
-.main-nav::before {
+nav::before {
   content: '';
   position: absolute;
   top: 0;
@@ -249,7 +250,7 @@ a:visited {
   visibility: hidden;
 }
 
-.main-nav[aria-expanded='true']::before {
+nav[aria-expanded='true']::before {
   opacity: 1;
   visibility: visible;
 }
@@ -276,8 +277,9 @@ a:visited {
     display: none;
   }
 
-  .main-nav[aria-expanded='false'] {
+  nav[aria-expanded='false'] {
     ul {
+      list-style: none;
       /* Reset list of links to normal positioning,
         and set display flex here (not sure why). */
       position: initial;
