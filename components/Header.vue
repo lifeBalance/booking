@@ -6,7 +6,18 @@ const headerElement = ref()
 
 const toggleMainNav = () => {
   console.log('Header: clicked on burger button')
+
   mainNavExpanded.value = !mainNavExpanded.value
+  if (mainNavExpanded.value) {
+    document.body.style.overflow = 'hidden' // Prevent scrolling
+  } else {
+    document.body.style.overflow = 'auto'   // Allow scrolling
+  }
+}
+
+const closeMainNav = () => {
+  mainNavExpanded.value = false
+  document.body.style.overflow = 'auto'
 }
 
 // Add the event listener when the component is mounted
@@ -42,16 +53,28 @@ function scrollingHandler() {
 
     <nav class="main-nav" :aria-expanded="mainNavExpanded">
       <ul>
-        <li><NuxtLink to="/">Home</NuxtLink></li>
-        <li><NuxtLink to="/app">App</NuxtLink></li>
+        <li>
+          <NuxtLink class="main-nav-link" to="/" @click="closeMainNav"
+            >Home</NuxtLink
+          >
+        </li>
+        <li>
+          <NuxtLink class="main-nav-link" to="/app" @click="closeMainNav"
+            >App</NuxtLink
+          >
+        </li>
       </ul>
     </nav>
 
-    <BurgerIcon class="burger-btn-main" @burgerClick="toggleMainNav" />
+    <BurgerIcon
+      class="burger-btn-main"
+      @burgerClick="toggleMainNav"
+      :mainNavExpanded="mainNavExpanded"
+    />
   </header>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 header {
   display: flex;
   justify-content: space-between;
@@ -128,12 +151,13 @@ a:visited {
   display: flex;
   visibility: hidden;
   opacity: 0;
+  transition: all 0.5s ease-in-out;
 
   ul {
     list-style: none;
-    position: absolute;
-    top: 0;
-    left: 0;
+    // position: absolute;
+    // top: 0;
+    // left: 0;
     gap: 1.5rem;
     align-items: center;
 
@@ -170,7 +194,7 @@ a:visited {
   bottom: 0;
   left: 0;
   z-index: 1;
-  transition: all 0.5s ease-in-out;
+  // transition: all 0.5s ease-in-out;
   min-height: 100vh;
 
   ul {

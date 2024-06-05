@@ -1,30 +1,12 @@
 <script setup>
 const emit = defineEmits(['burgerClick'])
-
-const burgerExpanded = ref(false)
+const { mainNavExpanded } = defineProps(['mainNavExpanded'])
 
 const handleClick = (el) => {
   console.log('clicked on burger button')
-  burgerExpanded.value = !burgerExpanded.value
-  emit('burgerClick', el)
-  console.log('burgerExpanded', burgerExpanded.value)
 
-  // Set tabindex to all links (except the ones in the sidebar)
-  function setTabindex(index) {
-    const links = document.querySelectorAll('body a:not(.main-nav a)')
-    links.forEach((link) => {
-      link.setAttribute('tabindex', index)
-      console.log('set tabindex')
-    })
-  }
-
-  if (!burgerExpanded.value) {
-    document.body.style.overflow = 'auto' // Enable scrolling
-    setTabindex('0') // Enable tabbing
-  } else {
-    document.body.style.overflow = 'hidden' // Disable scrolling
-    setTabindex('-1') // Disable tabbing
-  }
+  // Emit the burgerClick event so the parent component can handle it
+  emit('burgerClick')
 }
 </script>
 
@@ -32,7 +14,7 @@ const handleClick = (el) => {
   <button
     @click="handleClick"
     class="burger-btn"
-    :aria-expanded="burgerExpanded"
+    :aria-expanded="mainNavExpanded"
     data-burger-btn
   >
     <svg class="burger-icon" viewBox="0 0 100 100">
