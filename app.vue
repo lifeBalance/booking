@@ -14,12 +14,13 @@
 }
 
 .slide-enter-from {
-  opacity: 0;
+  // opacity: 0;
   transform: translateX(100%);
+  filter: grayscale(1);
 }
 
 .slide-leave-to {
-  opacity: 0;
+  // opacity: 0;
   transform: translateX(-100%);
   filter: grayscale(1);
 }

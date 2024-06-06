@@ -1,13 +1,15 @@
 <script setup>
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker'
+import soundEffect from '~/assets/sounds/gunreloading.m4a'
+import soundEffect2 from '~/assets/sounds/gunshot.mp3'
 
 definePageMeta({
   layout: 'default',
   pageTransition: {
     name: 'slide',
-    mode: 'out-in' // default
-  }
+    mode: 'out-in', // default
+  },
 })
 
 const date = ref(new Date())
@@ -30,7 +32,10 @@ const slots = ref([
 
 function book(idx) {
   if (slots.value[idx].available) {
+    navigator.vibrate(200) // vibrate for 200ms
     slots.value[idx].available = false
+    const cockingSound = new Audio(soundEffect)
+    cockingSound.play()
   }
 }
 </script>
