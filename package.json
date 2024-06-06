@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^8.7.0",
@@ -20,6 +21,7 @@
     "singleQuote": true
   },
   "devDependencies": {
+    "gh-pages": "^6.1.1",
     "nuxt-icon": "^0.6.10",
     "sass": "^1.77.4"
   }
