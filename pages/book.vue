@@ -1,8 +1,10 @@
 <script setup>
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker'
-import soundEffect from '~/assets/sounds/gunreloading.m4a'
-import soundEffect2 from '~/assets/sounds/gunshot.mp3'
+import cockingSoundFile from '~/assets/sounds/gunreloading.m4a'
+import shotSoundFile from '~/assets/sounds/gunshot.mp3'
+
+const router = useRouter()
 
 definePageMeta({
   layout: 'default',
@@ -13,7 +15,16 @@ definePageMeta({
 })
 
 const date = ref(new Date())
+let booked = reactive({
+  date: null,
+  time: null,
+})
+
 console.log('date', date)
+const modalOpen = ref(false)
+const modalText = computed(() => {
+  return `You are about to book a range for ${booked.date} at ${booked.time}`
+})
 
 const slots = ref([
   { time: '9:00 AM', available: true },
@@ -30,13 +41,66 @@ const slots = ref([
   { time: '8:00 PM', available: true },
 ])
 
-function book(idx) {
+function bookSlot(idx) {
   if (slots.value[idx].available) {
-    navigator.vibrate(200) // vibrate for 200ms
-    slots.value[idx].available = false
-    const cockingSound = new Audio(soundEffect)
+    const cockingSound = new Audio(cockingSoundFile)
     cockingSound.play()
+    navigator.vibrate(200) // vibrate for 200ms
+
+    // Set the booked date and time (websocket call)
+    booked = {
+      date: date.value.toDateString(),
+      time: slots.value[idx].time,
+    }
+
+    // We have to do this to trigger the reactivity
+    slots.value = [...slots.value]
+    setTimeout(() => {
+      openModal()
+    }, 1000)
   }
+}
+
+function freeSlot() {
+  setTimeout(() => {
+    for (let slot of slots.value) {
+      if (slot.time === booked.time) {
+        slot.available = true
+        console.log(`slot ${booked.time} is now available`)
+        booked.time = null
+        break
+      }
+    }
+    slots.value = [...slots.value]
+  }, 1000)
+}
+
+const openModal = () => {
+  console.log('Header: clicked on time slot')
+  modalOpen.value = true
+  document.body.style.overflow = 'hidden' // Prevent scrolling
+}
+
+const handleCloseModal = () => {
+  console.log('Header: clicked on modal overlay')
+  modalOpen.value = false
+  document.body.style.overflow = 'auto' // Allow scrolling
+}
+
+const handleCancel = () => {
+  console.log('Header: clicked on cancel button')
+  modalOpen.value = false
+  document.body.style.overflow = 'auto' // Allow scrolling
+  freeSlot()
+}
+
+const handleNext = () => {
+  console.log('Header: clicked on next button')
+  const shotSound = new Audio(shotSoundFile)
+  shotSound.play()
+  modalOpen.value = false
+  document.body.style.overflow = 'auto' // Allow scrolling
+  router.push('/')
 }
 </script>
 
@@ -60,15 +124,27 @@ function book(idx) {
       <div class="time-slots">
         <div
           class="time-slot"
-          :class="{ 'time-slot--booked': !slot.available }"
+          :class="{
+            'time-slot--booked': !slot.available && !booked.time,
+            'time-slot--booking': slot.available && booked.time === slot.time,
+          }"
           v-for="(slot, idx) of slots"
           :data-available="slot.available"
-          @click="book(idx)"
+          @click="bookSlot(idx)"
         >
           {{ slot.time }} - {{ slot.available ? 'Available' : 'Booked' }}
         </div>
 
         <!-- <button class="next">next</button> -->
+        <Modal :modalOpen="modalOpen" @closeModal="handleCloseModal">
+          <ModalCard
+            title="You're about to book a range:"
+            :date="booked.date"
+            :time="booked.time"
+            :cancelHandler="handleCancel"
+            :nextHandler="handleNext"
+          />
+        </Modal>
       </div>
     </section>
   </div>
@@ -133,31 +209,20 @@ function book(idx) {
       color: rgb(var(--color-text-3));
       cursor: not-allowed;
 
-      &:hover {
-        background-color: rgb(var(--color-accent-2));
-        color: rgb(var(--color-bg));
+      &:hover,
+      &:active {
+        background-color: transparent;
+        color: rgb(var(--color-text-3));
       }
     }
+
+    & .time-slot--booking {
+      border: 1px solid rgb(var(--color-accent-1));
+      color: rgb(var(--color-bg));
+      background-color: rgb(var(--color-accent-1));
+      cursor: not-allowed;
+    }
   }
-
-  // .next {
-  //   margin-top: 4rem;
-  //   all: unset;
-  //   color: rgb(var(--color-accent-1));
-  //   padding: 1em 2em;
-  //   border: 1px solid rgb(var(--color-accent-1));
-  //   border-radius: 5px;
-  //   text-align: center;
-  //   display: inline-block;
-  //   cursor: pointer;
-  //   transition: all 0.3s ease-in-out;
-
-  //   &:hover {
-  //     background-color: rgb(var(--color-accent-1));
-  //     color: rgb(var(--color-bg));
-  //     scale: 1.05;
-  //   }
-  // }
 }
 
 /* MEDIA QUERIES */
@@ -190,6 +255,6 @@ function book(idx) {
 <!-- The date picker custom class can't be scoped styled -->
 <style>
 .dp-custom-menu {
-  box-shadow: 0 0 .75rem rgb(var(--color-accent-1));
+  box-shadow: 0 0 0.75rem rgb(var(--color-accent-1));
 }
 </style>
