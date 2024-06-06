@@ -41,44 +41,63 @@ function book(idx) {
 </script>
 
 <template>
-  <section>
-    <h2>Book a Range</h2>
-    <h3>Select Date and Time</h3>
-    <div class="picker">
-      <VueDatePicker
-        v-model="date"
-        auto-apply
-        :enable-time-picker="false"
-        dark
-        menu-class-name="dp-custom-menu"
-      />
-    </div>
+  <div class="book-container">
+    <section class="img-section"></section>
 
-    <div class="time-grid">
-      <div
-        class="time-slot"
-        :class="{ 'time-slot--booked': !slot.available }"
-        v-for="(slot, idx) of slots"
-        :data-available="slot.available"
-        @click="book(idx)"
-      >
-        {{ slot.time }} - {{ slot.available ? 'Available' : 'Booked' }}
+    <section class="book-section">
+      <h2>Book a Range</h2>
+      <h3>Select Date and Time</h3>
+      <div class="picker">
+        <VueDatePicker
+          v-model="date"
+          auto-apply
+          :enable-time-picker="false"
+          dark
+          menu-class-name="dp-custom-menu"
+        />
       </div>
 
-      <button class="next">next</button>
-    </div>
-  </section>
+      <div class="time-slots">
+        <div
+          class="time-slot"
+          :class="{ 'time-slot--booked': !slot.available }"
+          v-for="(slot, idx) of slots"
+          :data-available="slot.available"
+          @click="book(idx)"
+        >
+          {{ slot.time }} - {{ slot.available ? 'Available' : 'Booked' }}
+        </div>
+
+        <!-- <button class="next">next</button> -->
+      </div>
+    </section>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-section {
+.book-container {
+  max-width: 80%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  gap: 4rem;
+  padding: 4rem 0;
+}
+
+.img-section {
+  display: none;
+}
+
+.book-section {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0 auto;
   gap: 2rem;
-  padding: 6rem 0;
-  // Default color
+  min-width: 50%;
+  padding-top: 2rem;
   color: rgb(var(--color-text-1));
 
   h2 {
@@ -86,13 +105,12 @@ section {
     font-size: 2rem;
   }
 
-  & .time-grid {
-    // border: 1px solid rgb(var(--color-accent-1));
+  & .time-slots {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    width: 50%;
+    min-width: 100%;
     margin: 0 auto;
 
     & .time-slot {
@@ -102,6 +120,7 @@ section {
       border-radius: 0.5rem;
       cursor: pointer;
       transition: all 0.3s ease-in-out;
+      text-align: center;
 
       &:hover {
         background-color: rgb(var(--color-accent-1));
@@ -121,30 +140,56 @@ section {
     }
   }
 
-  .next {
-    margin-top: 4rem;
-    all: unset;
-    color: rgb(var(--color-accent-1));
-    padding: 1em 2em;
-    border: 1px solid rgb(var(--color-accent-1));
-    border-radius: 5px;
-    text-align: center;
-    display: inline-block;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
+  // .next {
+  //   margin-top: 4rem;
+  //   all: unset;
+  //   color: rgb(var(--color-accent-1));
+  //   padding: 1em 2em;
+  //   border: 1px solid rgb(var(--color-accent-1));
+  //   border-radius: 5px;
+  //   text-align: center;
+  //   display: inline-block;
+  //   cursor: pointer;
+  //   transition: all 0.3s ease-in-out;
 
-    &:hover {
-      background-color: rgb(var(--color-accent-1));
-      color: rgb(var(--color-bg));
-      scale: 1.05;
-    }
+  //   &:hover {
+  //     background-color: rgb(var(--color-accent-1));
+  //     color: rgb(var(--color-bg));
+  //     scale: 1.05;
+  //   }
+  // }
+}
+
+/* MEDIA QUERIES */
+@media (min-width: 350px) {
+}
+
+@media (min-width: 480px) {
+}
+
+@media (min-width: 768px) {
+  .img-section {
+    display: block;
+    border-radius: 0.5rem;
+    flex-grow: 1;
+    align-self: stretch;
+    margin-top: 2rem;
+    background-image: url('~/assets/images/hero.jpeg');
+    background-size: cover;
+    background-position: center;
   }
+}
+
+@media (min-width: 992px) {
+}
+
+@media (min-width: 1200px) {
 }
 </style>
 
-<!-- The date picker custome class can't be scoped styled -->
+<!-- The date picker custom class can't be scoped styled -->
 <style>
 .dp-custom-menu {
-  box-shadow: 0 0 0.5rem #1976d2;
+  box-shadow: 0 0 .75rem rgb(var(--color-accent-1));
 }
 </style>
