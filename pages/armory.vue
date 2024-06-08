@@ -81,7 +81,7 @@ section {
 .armory-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 1rem;
   //   border: 1px solid aqua;
 
@@ -164,6 +164,39 @@ section {
 }
 
 @media (min-width: 992px) {
+  .armory-content {
+    & .armory {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      row-gap: 2rem;
+      column-gap: 2rem;
+
+      & > * {
+        min-height: 10rem;
+        margin: auto 0;
+      }
+
+      & .armory:nth-child(1) {
+        grid-column: 1;
+      }
+      & .armory:nth-child(2) {
+        grid-column: 1;
+      }
+      & .armory:nth-child(3) {
+        grid-column: 1;
+      }
+      & .armory:nth-child(4) {
+        grid-column: 2;
+      }
+      & .armory:nth-child(5) {
+        grid-column: 2;
+      }
+      & .armory:nth-child(6) {
+        grid-column: 2;
+      }
+    }
+  }
 }
 
 @media (min-width: 1200px) {
