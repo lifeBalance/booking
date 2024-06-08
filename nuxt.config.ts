@@ -23,8 +23,14 @@ export default defineNuxtConfig({
       ],
     },
   },
-  routeRules: {
-    '/': { prerender: true },
-    '/book': { prerender: true },
-  },
+  ssr: true,
+  nitro: {
+    prerender: {
+      routes: ['/', '/book']
+    },
+    // routeRules: {
+    //   '/': { prerender: true },
+    //   '/book': { prerender: true },
+    // },
+  }
 })
