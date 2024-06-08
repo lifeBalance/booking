@@ -10,7 +10,7 @@
         let's fill this paragraph! Pew
       </p>
 
-      <NuxtLink to="/book">Book</NuxtLink>
+      <NuxtLink to="/book">Book Range</NuxtLink>
     </div>
   </section>
 </template>

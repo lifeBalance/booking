@@ -41,7 +41,6 @@
 }
 
 .container {
-  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -52,5 +51,8 @@
 
 main {
   flex: 1;
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
 }
 </style>

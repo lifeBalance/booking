@@ -8,15 +8,15 @@ const { companyName } = defineProps(['companyName'])
       <div class="logo-social">
         <h3 class="logo">
           <TargetIcon class="icon" />
-          <a href="/">{{ companyName }}</a>
+          <NuxtLink to="/">{{ companyName }}</NuxtLink>
           <br />
         </h3>
 
         <div class="social">
-          <a href="http://"><Icon name="ph:instagram-logo" class="icon" /></a>
-          <a href="http://"><Icon name="ph:x-logo" class="icon" /></a>
-          <a href="http://"><Icon name="ph:facebook-logo" class="icon" /></a>
-          <a href="http://"><Icon name="ph:whatsapp-logo" class="icon" /></a>
+          <a href="https://www.instagram.com/"><Icon name="ph:instagram-logo" class="icon" /></a>
+          <a href="https://x.com/"><Icon name="ph:x-logo" class="icon" /></a>
+          <a href="https://www.facebook.com/"><Icon name="ph:facebook-logo" class="icon" /></a>
+          <a href="https://www.whatsapp.com/"><Icon name="ph:whatsapp-logo" class="icon" /></a>
         </div>
       </div>
 

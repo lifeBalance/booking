@@ -100,7 +100,7 @@ const handleNext = () => {
   shotSound.play()
   modalOpen.value = false
   document.body.style.overflow = 'auto' // Allow scrolling
-  router.push('/')
+  router.push('/armory')
 }
 </script>
 

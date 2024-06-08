@@ -23,7 +23,7 @@
   </svg>
 </template>
 
-<style>
+<style scoped>
 .svg-icon {
   display: inline-block;
   width: 2em;
