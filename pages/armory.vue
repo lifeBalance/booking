@@ -14,45 +14,50 @@ function handleBookGun() {
 
 <template>
   <section>
-    <div class="armory-pic">
-      <!-- <img src="~/assets/images/armory.jpeg" alt="weapons" /> -->
-    </div>
+    <Stepper activeStep="2" />
 
-    <div class="armory-content">
-      <h2>Need a Weapon?</h2>
-      <p>
-        Book a weapon if you need one, or skip if you prefer to bring your own.
-      </p>
+    <div class="armory-wrapper">
+      <div class="armory-pic">
+        <!-- <img src="~/assets/images/armory.jpeg" alt="weapons" /> -->
+      </div>
 
-      <div class="armory">
-        <div class="btn" @click="handleBookGun">
-          <p>pistol</p>
-          <PistolIcon class="svg-icon" />
-        </div>
+      <div class="armory-content">
+        <h2>Need a Weapon?</h2>
+        <p>
+          Book a weapon if you need one, or skip if you prefer to bring your
+          own.
+        </p>
 
-        <div class="btn" @click="handleBookGun">
-          <p>revolver</p>
-          <RevolverIcon class="svg-icon" />
-        </div>
+        <div class="armory">
+          <div class="btn" @click="handleBookGun">
+            <p>pistol</p>
+            <PistolIcon class="svg-icon" />
+          </div>
 
-        <div class="btn" @click="handleBookGun">
-          <p>semi</p>
-          <AkIcon class="svg-icon" />
-        </div>
+          <div class="btn" @click="handleBookGun">
+            <p>revolver</p>
+            <RevolverIcon class="svg-icon" />
+          </div>
 
-        <div class="btn" @click="handleBookGun">
-          <p>rifle</p>
-          <ShotgunIcon class="svg-icon" />
-        </div>
+          <div class="btn" @click="handleBookGun">
+            <p>semi</p>
+            <AkIcon class="svg-icon" />
+          </div>
 
-        <div class="btn" @click="handleBookGun">
-          <p>auto</p>
-          <AkIcon class="svg-icon" />
-        </div>
+          <div class="btn" @click="handleBookGun">
+            <p>rifle</p>
+            <ShotgunIcon class="svg-icon" />
+          </div>
 
-        <div class="btn" @click="handleBookGun">
-          <p>I'll bring my own</p>
-          <ShotgunIcon class="svg-icon" />
+          <div class="btn" @click="handleBookGun">
+            <p>auto</p>
+            <AkIcon class="svg-icon" />
+          </div>
+
+          <div class="btn" @click="handleBookGun">
+            <p>I'll bring my own</p>
+            <ShotgunIcon class="svg-icon" />
+          </div>
         </div>
       </div>
     </div>
@@ -61,18 +66,18 @@ function handleBookGun() {
 
 <style lang="scss" scoped>
 section {
+  padding-top: 3rem;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.armory-wrapper {
+  margin-top: 2rem;
   display: grid;
   grid-template-columns: 1fr;
   grid-auto-rows: 1fr;
-  max-width: 80%;
-  margin: 0 auto;
-  margin-top: 4rem;
   gap: 1rem;
 }
-
-// img {
-//   width: 100%;
-// }
 
 .armory-pic {
   display: none;
@@ -83,7 +88,6 @@ section {
   flex-direction: column;
   gap: 1.5rem;
   padding: 1rem;
-  //   border: 1px solid aqua;
 
   & h2 {
     color: rgb(var(--color-accent-1));
@@ -149,8 +153,9 @@ section {
 }
 
 @media (min-width: 768px) {
-  section {
+  .armory-wrapper {
     grid-template-columns: 1fr 1fr;
+    padding-top: 2rem;
   }
 
   .armory-pic {

@@ -106,7 +106,7 @@ const handleNext = () => {
 
 <template>
   <div class="book-wrapper">
-    <Stepper activeStep="2" />
+    <Stepper activeStep="1" />
     <div class="book-container">
       <section class="img-section"></section>
 

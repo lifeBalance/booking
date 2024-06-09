@@ -6,65 +6,92 @@ const { activeStep } = defineProps(['activeStep'])
 <template>
   <section>
     <div class="stepper">
-      <div
-        class="step"
-        v-for="step, idx in steps"
-        :class="{
-          active: activeStep == step.position,
-          completed: step.position < activeStep,
-        }"
-      >
-        <span
-          :class="{ active: activeStep == step.position }"
-          v-if="step.position >= activeStep"
-          >{{ step.position }}</span
-        >
-        <span class="completed" v-else
-          ><Icon name="ph:check" class="icon"
-        /></span>
-      </div>
+      <ul class="step-list">
+        <li v-for="(step, idx) in steps">
+          <span
+            :class="{
+              active: activeStep == step.position,
+              completed: step.position < activeStep,
+            }"
+            v-if="step.position < activeStep"
+          >
+            <Icon name="ph:check" class="icon" />
+          </span>
 
-      <div class="line"></div>
+          <span
+            :class="{
+              active: activeStep == step.position,
+              completed: step.position < activeStep,
+            }"
+            v-else
+          >
+            {{ step.position }}
+          </span>
+
+          <div
+            v-if="idx < steps.length - 1"
+            class="line"
+            :class="{ completed: step.position < activeStep }"
+          >
+            <hr />
+          </div>
+        </li>
+      </ul>
     </div>
   </section>
 </template>
 
 <style lang="scss" scoped>
-section {
-  position: relative;
+.step-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  list-style: none;
+}
 
-  & .stepper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 30%;
-  }
+li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  & .line {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-100%);
-    border-bottom: 1px dotted rgb(var(--color-text-3));
-    margin: 0 1rem;
-    width: 95%;
-  }
+// Default styling for the spans
+span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: rgb(var(--color-text-3));
+  color: rgb(var(--color-bg));
+  border-radius: 50%;
+}
 
-  & .step {
+span.completed,
+span.active {
+  background-color: rgb(var(--color-bg));
+  border: 1px solid rgb(var(--color-accent-1));
+  color: rgb(var(--color-accent-1));
+}
+
+li:not(:last-child) {
+  flex: 1;
+
+  & div.line {
+    flex: 1;
+    margin: 0 0.2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 2rem;
-    height: 2rem;
-    background-color: rgb(var(--color-text-3));
-    color: rgb(var(--color-bg));
-    border-radius: 50%;
-    z-index: 1;
 
-    &.completed,
-    &.active {
-      background-color: rgb(var(--color-bg));
+    & hr {
+      flex: 1;
+      border: 1px solid rgb(var(--color-text-3));
+    }
+
+    &.completed hr {
       border: 1px solid rgb(var(--color-accent-1));
-      color: rgb(var(--color-accent-1));
     }
   }
 }
