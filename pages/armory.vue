@@ -7,7 +7,7 @@ function handleBookGun() {
   cockingSound.play()
   navigator.vibrate(200) // vibrate for 200ms
   setTimeout(() => {
-    router.push('/')
+    router.push('/payment')
   }, 1000)
 }
 </script>

@@ -1,5 +1,9 @@
 <script setup>
-const steps = [{ position: 1 }, { position: 2 }, { position: 3 }]
+const steps = [
+  { position: 1, route: 'book' },
+  { position: 2, route: 'armory' },
+  { position: 3, route: 'payment' },
+]
 const { activeStep } = defineProps(['activeStep'])
 </script>
 
@@ -8,25 +12,32 @@ const { activeStep } = defineProps(['activeStep'])
     <div class="stepper">
       <ul class="step-list">
         <li v-for="(step, idx) in steps">
-          <span
+          <NuxtLink
+            :to="step.position < activeStep ? step.route : ''"
             :class="{
-              active: activeStep == step.position,
-              completed: step.position < activeStep,
+              disabled: step.position > activeStep,
             }"
-            v-if="step.position < activeStep"
           >
-            <Icon name="ph:check" class="icon" />
-          </span>
+            <span
+              :class="{
+                active: activeStep == step.position,
+                completed: step.position < activeStep,
+              }"
+              v-if="step.position < activeStep"
+            >
+              <Icon name="ph:check" class="icon" />
+            </span>
 
-          <span
-            :class="{
-              active: activeStep == step.position,
-              completed: step.position < activeStep,
-            }"
-            v-else
-          >
-            {{ step.position }}
-          </span>
+            <span
+              :class="{
+                active: activeStep == step.position,
+                completed: step.position < activeStep,
+              }"
+              v-else
+            >
+              {{ step.position }}
+            </span>
+          </NuxtLink>
 
           <div
             v-if="idx < steps.length - 1"
@@ -54,6 +65,14 @@ li {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+
+  & a {
+    text-decoration: none;
+  }
+  & a.disabled {
+    cursor: not-allowed;
+  }
 }
 
 // Default styling for the spans
