@@ -40,6 +40,10 @@
   --page-width: 100%;
 }
 
+body {
+  background-color: rgb(var(--color-bg));
+}
+
 .container {
   display: flex;
   flex-direction: column;

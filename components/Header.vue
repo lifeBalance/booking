@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 
 const mainNavExpanded = ref(false)
 const mainNavSticky = ref(false)
+const currentScrollTopRef = ref(null)
 
 const toggleMainNav = () => {
   console.log('Header: clicked on burger button')
@@ -29,20 +30,28 @@ onMounted(() => {
 // Store the last scroll position
 let lastScrollTop = 0
 function scrollingHandler() {
-  const currentScrollTop = window.scrollY || document.documentElement.scrollTop
+  let currentScrollTop =
+    window.scrollY ||
+    document.documentElement.scrollTop ||
+    document.body.scrollTop
 
+    // window.removeEventListener('scroll', scrollingHandler)
   if (currentScrollTop > lastScrollTop) {
     // When the user scrolls down
-    lastScrollTop = currentScrollTop
-    // console.log('downscroll', currentScrollTop, lastScrollTop)
+    console.log('downscroll', currentScrollTop, lastScrollTop)
     mainNavSticky.value = false
-  } else {
+  } else if (currentScrollTop < 0 || currentScrollTop < lastScrollTop) {
     // When the user scrolls up
-    lastScrollTop = currentScrollTop
-    // console.log('upscroll', currentScrollTop, lastScrollTop)
+    console.log('upscroll', currentScrollTop, lastScrollTop)
     mainNavSticky.value = true
   }
+
+  // In Safari, the window.scrollY can become negative when the user scrolls
+  // like a maniac, due to the scroll inertia; hence we need this, so the 
+  // currentScrollTop never goes below 0.
+  lastScrollTop = currentScrollTop > 0 ? currentScrollTop : 0
   console.log('scrolling')
+  currentScrollTopRef.value = currentScrollTop
 }
 </script>
 
@@ -56,9 +65,10 @@ function scrollingHandler() {
       <ul>
         <li>
           <NuxtLink class="main-nav-link" to="/" @click="closeMainNav"
-            >Home</NuxtLink
+          >Home</NuxtLink
           >
         </li>
+        <!-- <li style="color: white">y: {{ currentScrollTopRef }}</li> -->
         <li>
           <NuxtLink class="main-nav-link" to="/book" @click="closeMainNav"
             >Book</NuxtLink
@@ -82,13 +92,13 @@ header {
   align-items: center;
   gap: 0.5rem;
   margin: 0 auto;
-  box-shadow: 0 0 2rem rgba(var(--color-text-1), 0.3);
+  // box-shadow: 0 0 2rem rgba(var(--color-text-1), 0.3);
   padding: 0.5rem 2.5%;
   position: fixed;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-100%);
-  transition: all 0.5s ease-in-out;
+  transition: all 0.7s ease-in-out;
   width: 100%;
 }
 
@@ -265,7 +275,7 @@ nav[aria-expanded='true']::before {
     flex-direction: row;
     transform: translate(100%);
     position: initial;
-    
+
     ul {
       list-style: none;
       gap: 1.5rem;
