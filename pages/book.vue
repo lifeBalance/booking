@@ -105,60 +105,64 @@ const handleNext = () => {
 </script>
 
 <template>
-  <div class="book-container">
-    <section class="img-section"></section>
+  <div class="book-wrapper">
+    <Stepper activeStep="2" />
+    <div class="book-container">
+      <section class="img-section"></section>
 
-    <section class="book-section">
-      <h2>Book a Range</h2>
-      <h3>Select Date and Time</h3>
-      <div class="picker">
-        <VueDatePicker
-          v-model="date"
-          auto-apply
-          :enable-time-picker="false"
-          dark
-          menu-class-name="dp-custom-menu"
-        />
-      </div>
-
-      <div class="time-slots">
-        <div
-          class="time-slot"
-          :class="{
-            'time-slot--booked': !slot.available && !booked.time,
-            'time-slot--booking': slot.available && booked.time === slot.time,
-          }"
-          v-for="(slot, idx) of slots"
-          :data-available="slot.available"
-          @click="bookSlot(idx)"
-        >
-          {{ slot.time }} - {{ slot.available ? 'Available' : 'Booked' }}
+      <section class="book-section">
+        <h2>Book a Range</h2>
+        <h3>Select Date and Time</h3>
+        <div class="picker">
+          <VueDatePicker
+            v-model="date"
+            auto-apply
+            :enable-time-picker="false"
+            dark
+            menu-class-name="dp-custom-menu"
+          />
         </div>
 
-        <!-- <button class="next">next</button> -->
-        <Modal :modalOpen="modalOpen" @closeModal="handleCloseModal">
-          <ModalCard
-            title="You're about to book a range:"
-            :date="booked.date"
-            :time="booked.time"
-            :cancelHandler="handleCancel"
-            :nextHandler="handleNext"
-          />
-        </Modal>
-      </div>
-    </section>
+        <div class="time-slots">
+          <div
+            class="time-slot"
+            :class="{
+              'time-slot--booked': !slot.available && !booked.time,
+              'time-slot--booking': slot.available && booked.time === slot.time,
+            }"
+            v-for="(slot, idx) of slots"
+            :data-available="slot.available"
+            @click="bookSlot(idx)"
+          >
+            {{ slot.time }} - {{ slot.available ? 'Available' : 'Booked' }}
+          </div>
+
+          <!-- <button class="next">next</button> -->
+          <Modal :modalOpen="modalOpen" @closeModal="handleCloseModal">
+            <ModalCard
+              title="You're about to book a range:"
+              :date="booked.date"
+              :time="booked.time"
+              :cancelHandler="handleCancel"
+              :nextHandler="handleNext"
+            />
+          </Modal>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.book-container {
+.book-wrapper {
   max-width: 80%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: stretch;
-  align-items: center;
-  gap: 4rem;
   padding: 4rem 0;
+  margin: 0 auto;
+}
+
+.book-container {
+  display: flex;
+  gap: 4rem;
 }
 
 .img-section {
