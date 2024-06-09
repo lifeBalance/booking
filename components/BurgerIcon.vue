@@ -18,9 +18,19 @@ const handleClick = (el) => {
     data-burger-btn
   >
     <svg class="burger-icon" viewBox="0 0 100 100">
-      <rect class="line top-bun"></rect>
-      <rect class="line meat"></rect>
-      <rect class="line bottom-bun"></rect>
+      <rect
+        class="line top-bun"
+        rx="5"
+        x="10"
+        :y="mainNavExpanded ? 45 : 25"
+      ></rect>
+      <rect class="line meat" rx="5" x="10" y="50"></rect>
+      <rect
+        class="line bottom-bun"
+        rx="5"
+        x="10"
+        :y="mainNavExpanded ? 45 : 75"
+      ></rect>
     </svg>
   </button>
 </template>
@@ -46,10 +56,10 @@ const handleClick = (el) => {
   width: 80px;
   stroke: rgb(var(--color-text-2));
   fill: rgb(var(--color-text-2));
-  rx: 5;
+  /* rx: 5; */
 }
 
-.line.top-bun {
+/* .line.top-bun {
   x: 10;
   y: 25;
 }
@@ -62,7 +72,7 @@ const handleClick = (el) => {
 .line.bottom-bun {
   x: 10;
   y: 75;
-}
+} */
 
 .burger-btn:hover .line {
   stroke: rgb(var(--color-accent-1));
@@ -84,9 +94,10 @@ const handleClick = (el) => {
   border-color: white;
 }
 
-.burger-btn[aria-expanded='true'] :is(.top-bun, .bottom-bun) {
-  y: 45; /* Move the top and bottom buns to the middle */
-}
+/* Move the top and bottom buns to the middle */
+/* .burger-btn[aria-expanded='true'] :is(.top-bun, .bottom-bun) {
+  y: 45; 
+} */
 
 .burger-btn[aria-expanded='true'] .top-bun {
   rotate: 45deg; /* Rotate the top line */
