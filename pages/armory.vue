@@ -5,7 +5,12 @@ import cockingSoundFile from '~/assets/sounds/gunreloading.m4a'
 function handleBookGun() {
   const cockingSound = new Audio(cockingSoundFile)
   cockingSound.play()
-  navigator.vibrate(200) // vibrate for 200ms
+
+  // Safari doesn't have a 'vibrate', we gotta check otherwise it breaks.
+  if (window.navigator.vibrate) {
+    window.navigator.vibrate(200) // vibrate for 200ms
+  }
+
   setTimeout(() => {
     router.push('/payment')
   }, 1000)
