@@ -93,7 +93,7 @@ header {
   gap: 0.5rem;
   margin: 0 auto;
   // box-shadow: 0 0 2rem rgba(var(--color-text-1), 0.3);
-  padding: 0.5rem 2.5%;
+  padding: 0.8rem 2.5%;
   position: fixed;
   opacity: 0;
   visibility: hidden;
