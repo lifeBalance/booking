@@ -14,17 +14,15 @@ definePageMeta({
   },
 })
 
-const date = ref(new Date())
+const date = ref(null)
+const datePickerState = ref(true)
 let booked = reactive({
   date: null,
   time: null,
 })
 
-console.log('date', date)
+// console.log('date', date)
 const modalOpen = ref(false)
-const modalText = computed(() => {
-  return `You are about to book a range for ${booked.date} at ${booked.time}`
-})
 
 const slots = ref([
   { time: '9:00 AM', available: true },
@@ -41,11 +39,28 @@ const slots = ref([
   { time: '8:00 PM', available: true },
 ])
 
+// When a date is set, reset the date picker state to true (no error)
+watch(date, (newDate) => {
+  console.log(newDate, date)
+  if (newDate) datePickerState.value = true
+})
+
 function bookSlot(idx) {
+  console.log('date', date)
+  // Set error and early return if the user didn't select a date before slot
+  if (date.value === null) {
+    // Set error state in the date picker
+    datePickerState.value = false
+    return
+  }
+
   if (slots.value[idx].available) {
     const cockingSound = new Audio(cockingSoundFile)
     cockingSound.play()
-    navigator.vibrate(200) // vibrate for 200ms
+    // Safari doesn't have a 'vibrate', we gotta check otherwise it breaks.
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate(100)
+    }
 
     // Set the booked date and time (websocket call)
     booked = {
@@ -120,6 +135,7 @@ const handleNext = () => {
             :enable-time-picker="false"
             dark
             menu-class-name="dp-custom-menu"
+            :state="datePickerState"
           />
         </div>
 
