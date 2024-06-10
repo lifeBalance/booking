@@ -12,6 +12,8 @@ definePageMeta({
   <div>
     <Hero />
 
+    <LogoCarousel />
+
     <Testimonials />
 
     <ContactForm />
