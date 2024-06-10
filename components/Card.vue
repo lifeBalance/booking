@@ -35,24 +35,33 @@ const { img, name, text, testimonial } = defineProps([
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   color: white;
   min-height: 12rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+  scale: 1.01;
 }
 
 .testimonial {
   font-style: italic;
   position: relative;
   transform-style: preserve-3d;
+  text-indent: 5%;
+  padding-top: 1rem;
+  padding-left: 5rem;
 }
 
 .testimonial::after {
   content: '“';
   transform: scaleY(-1);
   font-family: 'Arial', serif;
-  font-size: 14rem;
+  font-size: 12rem;
   color: rgba(var(--color-text-3), 0.5);
   position: absolute;
-  top: -10rem;
+  top: -8rem;
   left: -1rem;
   transform: translateZ(-1px) scaleY(-1);
+  width: 25%;
 }
 
 .person {
@@ -62,7 +71,7 @@ const { img, name, text, testimonial } = defineProps([
 
 .pic {
   border-radius: 50%;
-  width: 15%;
+  width: 25%;
   height: auto;
 }
 
