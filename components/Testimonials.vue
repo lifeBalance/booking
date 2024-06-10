@@ -96,12 +96,19 @@ h2 {
 }
 
 @media (min-width: 480px) {
+  section {
+    padding: 6rem 5%;
+  }
+
   .card-list {
     max-width: 85%;
   }
 }
 
 @media (min-width: 768px) {
+  section {
+    padding: 6rem 7%;
+  }
 }
 
 @media (min-width: 992px) {

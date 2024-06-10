@@ -173,14 +173,17 @@ const selectOptions = [
 }
 
 @media (min-width: 480px) {
-  section {
-    max-width: 85%;
+  .contact-form {
+    padding-left: 5%;
+    padding-right: 5%;
   }
 }
 
 @media (min-width: 768px) {
   .contact-form {
     grid-template-columns: 1fr 1fr;
+    padding-left: 7%;
+    padding-right: 7%;
 
     & .form-box {
       form {
@@ -222,6 +225,10 @@ const selectOptions = [
 }
 
 @media (min-width: 992px) {
+  .contact-form {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
 }
 
 @media (min-width: 1200px) {
