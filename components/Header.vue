@@ -260,12 +260,22 @@ nav[aria-expanded='true']::before {
 }
 
 @media (min-width: 480px) {
+  header {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
   .logo span {
     font-size: 1.5rem;
   }
 }
 
 @media (min-width: 768px) {
+  header {
+    padding-left: 7%;
+    padding-right: 7%;
+  }
+
   .burger-btn-main {
     display: none;
   }
@@ -315,6 +325,11 @@ nav[aria-expanded='true']::before {
 }
 
 @media (min-width: 992px) {
+  header {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+
   .flex-row-container {
     max-width: 80%;
   }
