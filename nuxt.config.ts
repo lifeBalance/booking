@@ -2,6 +2,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['nuxt-icon'],
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
   app: {
     baseURL: '/booking/',
     buildAssetsDir: 'assets',
@@ -26,11 +32,11 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
-      routes: ['/', '/book']
+      routes: ['/', '/book'],
     },
     // routeRules: {
     //   '/': { prerender: true },
     //   '/book': { prerender: true },
     // },
-  }
+  },
 })
