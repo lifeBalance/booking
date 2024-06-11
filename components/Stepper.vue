@@ -8,51 +8,54 @@ const { activeStep } = defineProps(['activeStep'])
 </script>
 
 <template>
-  <section>
-    <div class="stepper">
-      <ul class="step-list">
-        <li v-for="(step, idx) in steps">
-          <NuxtLink
-            :to="step.position < activeStep ? step.route : ''"
+  <section class="stepper">
+    <ul class="step-list">
+      <li v-for="(step, idx) in steps">
+        <NuxtLink
+          :to="step.position < activeStep ? step.route : ''"
+          :class="{
+            disabled: step.position > activeStep,
+          }"
+        >
+          <span
             :class="{
-              disabled: step.position > activeStep,
+              active: activeStep == step.position,
+              completed: step.position < activeStep,
             }"
+            v-if="step.position < activeStep"
           >
-            <span
-              :class="{
-                active: activeStep == step.position,
-                completed: step.position < activeStep,
-              }"
-              v-if="step.position < activeStep"
-            >
-              <Icon name="ph:check" class="icon" />
-            </span>
+            <Icon name="ph:check" class="icon" />
+          </span>
 
-            <span
-              :class="{
-                active: activeStep == step.position,
-                completed: step.position < activeStep,
-              }"
-              v-else
-            >
-              {{ step.position }}
-            </span>
-          </NuxtLink>
-
-          <div
-            v-if="idx < steps.length - 1"
-            class="line"
-            :class="{ completed: step.position < activeStep }"
+          <span
+            :class="{
+              active: activeStep == step.position,
+              completed: step.position < activeStep,
+            }"
+            v-else
           >
-            <hr />
-          </div>
-        </li>
-      </ul>
-    </div>
+            {{ step.position }}
+          </span>
+          <span class="step-name">{{ step.route }}</span>
+        </NuxtLink>
+
+        <div
+          v-if="idx < steps.length - 1"
+          class="line"
+          :class="{ completed: step.position < activeStep }"
+        >
+          <hr />
+        </div>
+      </li>
+    </ul>
   </section>
 </template>
 
 <style lang="scss" scoped>
+.stepper {
+  margin-bottom: 5%;
+}
+
 .step-list {
   display: flex;
   justify-content: center;
@@ -113,5 +116,14 @@ li:not(:last-child) {
       border: 1px solid rgb(var(--color-accent-1));
     }
   }
+}
+
+.step-name {
+  border-radius: 0;
+  background-color: transparent;
+  color: rgb(var(--color-text-3));
+  text-transform: uppercase;
+  font-size: smaller;
+  position: absolute;
 }
 </style>
