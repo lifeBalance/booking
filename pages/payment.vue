@@ -129,17 +129,26 @@ const handleDeleteCard = (cardNumber) => {
 }
 
 @media (min-width: 480px) {
+  .payment {
+    padding: 6rem 8%;
+  }
 }
 
 @media (min-width: 768px) {
+  .payment {
+    padding: 6rem 10%;
+  }
 }
 
 @media (min-width: 992px) {
+  .payment {
+    padding: 6rem 12%;
+  }
 }
 
 @media (min-width: 1200px) {
   .payment {
-    padding: 6rem 10%;
+    padding: 6rem 12%;
   }
 }
 </style>
