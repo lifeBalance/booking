@@ -6,7 +6,7 @@ const props = defineProps({
 
 <template>
   <section class="payment-method">
-    <h3>{{ title }}</h3>
+    <h3 class="title">{{ title }}</h3>
 
     <div class="payment-options">
       <slot></slot>
@@ -16,8 +16,9 @@ const props = defineProps({
 
 <style>
 .payment-method {
-  h3 {
+  .title {
     font-weight: 500;
+    padding-left: 1.2rem;
     padding-bottom: 1rem;
     color: rgb(var(--color-text-2));
   }

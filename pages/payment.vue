@@ -82,6 +82,9 @@ const handleDeleteCard = (cardNumber) => {
 
 .add-card {
   margin-left: auto;
+  margin-right: 1rem;
+  padding-bottom: 1rem;
+
   .btn {
     display: flex;
     width: max-content;
@@ -121,6 +124,7 @@ const handleDeleteCard = (cardNumber) => {
     gap: 1rem;
     text-align: center;
     color: rgb(var(--color-accent-1));
+    padding-bottom: 1rem;
   }
 }
 
