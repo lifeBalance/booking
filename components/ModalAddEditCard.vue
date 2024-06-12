@@ -70,8 +70,18 @@ const isValidCardNumber = (cardNumber) => {
   return sum % 10 === 0
 }
 
+const handleCardNumberKeydown = (event) => {
+  console.log('card number keydown:', event.key)
+  // Clear the whitespace from the card number
+  const noWhiteSpace = state.card.cardNumber.replace(/\s/g, '')
+  // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
+  if (noWhiteSpace.length >= 16 && event.key !== 'Backspace') {
+    event.preventDefault()
+  }
+}
+
 const handleCardNumberKeypress = (event) => {
-  console.log('card number keypress:', event.key)
+  console.log('card keypress:', event.key)
   // Check if the entered string contains only digits
   const regex = /^\d+$/
   // Prevent non-numeric input
@@ -80,14 +90,33 @@ const handleCardNumberKeypress = (event) => {
   }
 }
 
-const handleCardNumberKeydown = (event) => {
+const handleCardExpiryKeydown = (event) => {
   console.log('card number keydown:', event.key)
-  // Check if the entered string contains 16 digits
-  const noWhiteSpace = state.card.cardNumber.replace(/\s/g, '')
+  // Clear the whitespace from the card number
+  const noWhiteSpace = state.card.cardExpiry.replace(/\s/g, '').replace(/\//g, '')
   // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
-  if (noWhiteSpace.length >= 16 && event.key !== 'Backspace') {
+  if (noWhiteSpace.length >= 4 && event.key !== 'Backspace') {
     event.preventDefault()
   }
+}
+
+const handleCardExpiryKeypress = (event) => {
+  console.log('card keypress:', event.key)
+  // Check if the entered string contains only digits
+  const regex = /^\d+$/
+  // Prevent non-numeric input
+  if (!regex.test(event.key)) {
+    event.preventDefault()
+  }
+}
+
+const handleCardExpiryInput = (event) => {
+  console.log('card number input:', event.target.value)
+  // Remove spaces from the card number
+  let noWhiteSpace = event.target.value.replace(/\s/g, '')
+
+  // Add a slash after every 2 digits
+  state.card.cardExpiry = noWhiteSpace.replace(/(\d{2})(?=\d)/g, '$1/')
 }
 
 const handleCardNumberInput = (event) => {
@@ -97,6 +126,14 @@ const handleCardNumberInput = (event) => {
 
   // Add a space after every 4 digits
   state.card.cardNumber = noWhiteSpace.replace(/(.{4})/g, '$1 ')
+}
+
+const handleCardCvcKeydown = (event) => {
+  console.log('card cvc keydown:', event.key)
+  // Prevent input when the entered string contains 3 digits and the key pressed is not a backspace
+  if (event.target.value.length >= 3 && event.key !== 'Backspace') {
+    event.preventDefault()
+  }
 }
 </script>
 
@@ -151,7 +188,9 @@ const handleCardNumberInput = (event) => {
             required
             autocomplete="off"
             :value="state.card.cardExpiry"
-            @keypress="handleCardNumberKeypress"
+            @input="handleCardExpiryInput"
+            @keypress="handleCardExpiryKeypress"
+            @keydown="handleCardExpiryKeydown"
           />
         </div>
 
@@ -166,6 +205,7 @@ const handleCardNumberInput = (event) => {
             autocomplete="off"
             :value="state.card.cardCvc"
             @keypress="handleCardNumberKeypress"
+            @keydown="handleCardCvcKeydown"
           />
         </div>
       </div>
