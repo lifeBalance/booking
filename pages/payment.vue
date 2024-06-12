@@ -1,17 +1,44 @@
 <script setup>
 import { reactive } from 'vue'
 
+// Edit/Add card modal
+const modalName = ref('')
+
+// const openModal = () => {
+//   console.log('Card: clicked on...')
+//   modalOpen.value = true
+//   document.body.style.overflow = 'hidden' // Prevent scrolling
+// }
+
+// const handleCancel = () => {
+//   console.log('Header: clicked on cancel button')
+//   modalOpen.value = false
+//   document.body.style.overflow = 'auto' // Allow scrolling
+// }
+
+// const handleDone = () => {
+//   console.log('Done: clicked on next button')
+//   // const shotSound = new Audio(shotSoundFile)
+//   // shotSound.play()
+//   modalOpen.value = false
+//   document.body.style.overflow = 'auto' // Allow scrolling
+// }
+
 const state = reactive({
   cards: [
     {
       cardBrand: 'visa',
       cardNumber: '1234 4321 5678 1122',
+      cardName: 'John Doe',
       cardExpiry: '08/28',
+      cardCvc: '059',
     },
     {
       cardBrand: 'mastercard',
       cardNumber: '1234 4321 5678 3344',
+      cardName: 'John Doe',
       cardExpiry: '05/29',
+      cardCvc: '059',
     },
   ],
 })
@@ -21,12 +48,39 @@ const otherMethods = [
   { brand: 'PayTrail', details: 'Pay with the PayTrail app' },
 ]
 
+const handleCloseCardModal = () => {
+  console.log('payment: close modal')
+  modalName.value = ''
+  document.body.style.overflow = 'auto' // Allow scrolling
+}
+
 const handleSelectCard = (cardNumber) => {
   console.log('select card:', cardNumber)
 }
 
 const handleEditCard = (cardNumber) => {
   console.log('edit card:', cardNumber)
+  modalName.value = 'editCard'
+}
+
+const handleAddCard = () => {
+  console.log('add card')
+  // modalOpen.value = true
+  modalName.value = 'addCard'
+}
+
+const saveCard = (card) => {
+  console.log('saving card', card)
+
+  state.cards.push({
+    cardBrand: card.cardBrand,
+    cardNumber: card.cardNumber,
+    cardName: card.cardName,
+    cardExpiry: card.cardExpiry,
+    cardCvc: card.cardCvc,
+  })
+  // Close the modal when added
+  modalName.value = ''
 }
 
 const handleDeleteCard = (cardNumber) => {
@@ -53,7 +107,7 @@ const handleDeleteCard = (cardNumber) => {
         />
       </PaymentMethod>
 
-      <div class="add-card" @click="() => console.log('adding card')">
+      <div class="add-card" @click="handleAddCard">
         <div class="btn">
           <Icon class="icon" name="ic:outline-add-card" />
           <h3>Add Credit / Debit Card</h3>
@@ -69,6 +123,20 @@ const handleDeleteCard = (cardNumber) => {
         />
       </PaymentMethod>
     </div>
+
+    <Modal :modalOpen="modalName !== ''" @closeModal="handleCloseCardModal">
+      <ModalAddEditCard
+        v-if="modalName === 'addCard'"
+        title="Add New Credit / Debit Card"
+        :card="{ cardNumber: '', cardName: '', cardExpiry: '', cardCvc: '', cardBrand: '' }"
+        :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
+      />
+
+      <div class="editCard" v-else-if="modalName === 'editCard'">
+        <h1>Edit card</h1>
+        <button @click="handleCloseCardModal">Close Modal</button>
+      </div>
+    </Modal>
   </section>
 </template>
 
@@ -103,7 +171,6 @@ const handleDeleteCard = (cardNumber) => {
       scale: 1.01;
     }
   }
-
 
   .icon {
     font-size: 1.5rem;

@@ -21,7 +21,6 @@ const closeModal = () => {
         class="modal"
         :class="{ open: modalOpen }"
         :modalOpen="modalOpen"
-        @click="$emit('closeModal')"
       >
         <slot></slot>
       </section>
