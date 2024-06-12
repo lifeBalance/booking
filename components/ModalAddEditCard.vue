@@ -93,19 +93,37 @@ const handleCardNumberKeypress = (event) => {
 const handleCardExpiryKeydown = (event) => {
   console.log('card number keydown:', event.key)
   // Clear the whitespace from the card number
-  const noWhiteSpace = state.card.cardExpiry.replace(/\s/g, '').replace(/\//g, '')
+  const content = state.card.cardExpiry.replace(/\s/g, '').replace(/\//g, '')
+  console.log('content keydown:', content)
   // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
-  if (noWhiteSpace.length >= 4 && event.key !== 'Backspace') {
-    event.preventDefault()
-  }
-}
-
-const handleCardExpiryKeypress = (event) => {
-  console.log('card keypress:', event.key)
-  // Check if the entered string contains only digits
   const regex = /^\d+$/
   // Prevent non-numeric input
-  if (!regex.test(event.key)) {
+  if (!regex.test(event.key) && event.key !== 'Backspace') {
+    event.preventDefault()
+  } else if (
+    content.length === 0 &&
+    parseInt(event.key) > 3
+  ) {
+    event.preventDefault()
+  } else if (
+    content.length === 1 &&
+    parseInt(content + event.key) > 31 &&
+    event.key !== 'Backspace'
+  ) {
+    event.preventDefault()
+  } else if (
+    content.length === 2 &&
+    parseInt(event.key) > 1 &&
+    event.key !== 'Backspace'
+  ) {
+    event.preventDefault()
+  } else if (
+    content.length === 3 &&
+    parseInt(event.key) > 2 &&
+    event.key !== 'Backspace'
+  ) {
+    event.preventDefault()
+  } else if (content.length >= 4 && event.key !== 'Backspace') {
     event.preventDefault()
   }
 }
@@ -189,7 +207,6 @@ const handleCardCvcKeydown = (event) => {
             autocomplete="off"
             :value="state.card.cardExpiry"
             @input="handleCardExpiryInput"
-            @keypress="handleCardExpiryKeypress"
             @keydown="handleCardExpiryKeydown"
           />
         </div>
