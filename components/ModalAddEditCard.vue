@@ -75,11 +75,11 @@ watch(
   { deep: true }
 )
 
-const isValidCardNumber = () => {
-  const cardNumber = state.card.cardNumber.number.replace(/\s/g, '')
+const isValidCardNumber = (number) => {
+  const cardNumber = number ? number.replace(/\s/g, '') : ''
   if (cardNumber.length !== 16) {
     state.card.cardNumber.error = 'Card number must be 16 digits'
-    return
+    return false
   }
 
   let sum = 0
@@ -97,8 +97,10 @@ const isValidCardNumber = () => {
 
   if (sum % 10 === 0) {
     state.card.cardNumber.error = ''
+    return true
   } else {
     state.card.cardNumber.error = 'Invalid card number'
+    return false
   }
 }
 
@@ -106,17 +108,29 @@ const isValidExpiry = (expiryDate) => {
   const expiry = expiryDate.replace(/\//g, '')
   if (expiry.length !== 4) {
     state.card.cardExpiry.error = 'Expiry must be 4 digits'
+    return false
   } else {
     state.card.cardExpiry.error = ''
+    return true
   }
 }
 
 const isValidCvc = (cvc) => {
   if (cvc.length === 3) {
     state.card.cardCvc.error = ''
+    return true
   } else {
     state.card.cardCvc.error = 'CVC must be 3 digits'
+    return false
   }
+}
+
+const disableSaveBtn = () => {
+  return (
+    !isValidCardNumber(state.card.cardNumber.number) ||
+    !isValidExpiry(state.card.cardExpiry.expiry) ||
+    !isValidCvc(state.card.cardCvc.cvc)
+  )
 }
 
 // CARD NUMBER HANDLERS
@@ -295,7 +309,13 @@ const handleCardCvcKeydown = (event) => {
       <button class="btn btn-cancel" @click="props.handlers.cancelHandler">
         Cancel
       </button>
-      <button class="btn" @click="handleSaveCard()">Save</button>
+      <button
+        class="btn"
+        @click="handleSaveCard"
+        :disabled="disableSaveBtn()"
+      >
+        Save
+      </button>
     </div>
   </section>
 </template>
@@ -400,6 +420,12 @@ input {
     background-color: rgb(var(--color-accent-1));
     color: rgb(var(--color-bg));
     scale: 1.05;
+  }
+
+  &:disabled {
+    border-color: rgb(var(--color-text-3));
+    color: rgb(var(--color-text-3));
+    cursor: not-allowed;
   }
 }
 

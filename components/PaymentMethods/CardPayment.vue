@@ -1,6 +1,7 @@
 <script setup>
 const props = defineProps({
   card: Object,
+  deleteCard: Function,
 })
 const emits = defineEmits(['selectCard', 'deleteCard', 'editCard'])
 const { cardBrand, cardNumber, cardExpiry } = props.card
@@ -39,10 +40,10 @@ const iconName = (cardBrand) => {
     </div>
 
     <div class="btn-box">
-      <button class="edit" @click="emits('editCard', cardNumber)">
+      <button class="edit" @click="props.deleteCard(cardNumber)">
         <Icon class="icon" name="ph:pencil" />
       </button>
-      <button class="delete" @click="emits('deleteCard', cardNumber)">
+      <button class="delete" @click="props.deleteCard(props.card.cardNumber)">
         <Icon class="icon" name="ph:trash" />
       </button>
     </div>

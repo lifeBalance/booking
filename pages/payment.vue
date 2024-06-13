@@ -1,27 +1,23 @@
 <script setup>
-import { reactive } from 'vue'
-
 // Edit/Add card modal
 const modalName = ref('')
 
-const state = reactive({
-  cards: [
-    {
-      cardBrand: 'visa',
-      cardNumber: '1234 4321 5678 1122',
-      cardName: 'John Doe',
-      cardExpiry: '08/28',
-      cardCvc: '059',
-    },
-    {
-      cardBrand: 'mastercard',
-      cardNumber: '1234 4321 5678 3344',
-      cardName: 'John Doe',
-      cardExpiry: '05/29',
-      cardCvc: '059',
-    },
-  ],
-})
+let cards = ref([
+  {
+    cardBrand: 'visa',
+    cardNumber: '1234 4321 5678 1122',
+    cardName: 'John Doe',
+    cardExpiry: '08/28',
+    cardCvc: '059',
+  },
+  {
+    cardBrand: 'mastercard',
+    cardNumber: '1234 4321 5678 3344',
+    cardName: 'John Doe',
+    cardExpiry: '05/29',
+    cardCvc: '059',
+  },
+])
 
 const otherMethods = [
   { brand: 'MobilePay', details: 'Pay with the MobilePay app' },
@@ -52,14 +48,15 @@ const handleAddCard = () => {
 const saveCard = (card) => {
   console.log('saving card', card)
 
-  state.cards.push(card)
+  cards.value.push(card)
   // Close the modal when added
   modalName.value = ''
 }
 
-const handleDeleteCard = (cardNumber) => {
-  console.log('delete card', cardNumber)
-  state.cards = state.cards.filter((card) => card.cardNumber !== cardNumber)
+const deleteCard = (number) => {
+  console.log('delete card', number)
+  cards.value = cards.value.filter((item) => item.cardNumber !== number)
+  console.log('cards:', cards)
 }
 </script>
 
@@ -71,14 +68,19 @@ const handleDeleteCard = (cardNumber) => {
       <h2><Icon name="ic:baseline-credit-card" /> Payment Methods</h2>
 
       <PaymentMethod title="Credit / Debit">
-        <CardPayment
-          v-for="(card, idx) in state.cards"
-          :card="card"
-          :class="{ separator: idx < state.cards.length - 1 }"
-          @selectCard="handleSelectCard"
-          @deleteCard="handleDeleteCard"
-          @editCard="handleEditCard"
-        />
+        <p class="no-cards" v-if="cards.length === 0">
+          You haven't added any Card
+        </p>
+        <div v-else>
+          <CardPayment
+            v-for="(card, idx) in cards"
+            :card="card"
+            :class="{ separator: idx < cards.length - 1 }"
+            :deleteCard="deleteCard"
+            @selectCard="handleSelectCard"
+            @editCard="handleEditCard"
+          />
+        </div>
       </PaymentMethod>
 
       <div class="add-card" @click="handleAddCard">
@@ -102,7 +104,13 @@ const handleDeleteCard = (cardNumber) => {
       <ModalAddEditCard
         v-if="modalName === 'addCard'"
         title="Add New Credit / Debit Card"
-        :card="{ cardNumber: '', cardName: '', cardExpiry: '', cardCvc: '', cardBrand: '' }"
+        :card="{
+          cardNumber: '',
+          cardName: '',
+          cardExpiry: '',
+          cardCvc: '',
+          cardBrand: '',
+        }"
         :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
       />
 
@@ -166,6 +174,11 @@ const handleDeleteCard = (cardNumber) => {
     text-align: center;
     color: rgb(var(--color-accent-1));
     padding-bottom: 1rem;
+  }
+
+  .no-cards {
+    color: rgb(var(--color-text-2));
+    padding: 0.5rem;
   }
 }
 
