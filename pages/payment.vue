@@ -4,26 +4,6 @@ import { reactive } from 'vue'
 // Edit/Add card modal
 const modalName = ref('')
 
-// const openModal = () => {
-//   console.log('Card: clicked on...')
-//   modalOpen.value = true
-//   document.body.style.overflow = 'hidden' // Prevent scrolling
-// }
-
-// const handleCancel = () => {
-//   console.log('Header: clicked on cancel button')
-//   modalOpen.value = false
-//   document.body.style.overflow = 'auto' // Allow scrolling
-// }
-
-// const handleDone = () => {
-//   console.log('Done: clicked on next button')
-//   // const shotSound = new Audio(shotSoundFile)
-//   // shotSound.play()
-//   modalOpen.value = false
-//   document.body.style.overflow = 'auto' // Allow scrolling
-// }
-
 const state = reactive({
   cards: [
     {
@@ -72,13 +52,7 @@ const handleAddCard = () => {
 const saveCard = (card) => {
   console.log('saving card', card)
 
-  state.cards.push({
-    cardBrand: card.cardBrand,
-    cardNumber: card.cardNumber,
-    cardName: card.cardName,
-    cardExpiry: card.cardExpiry,
-    cardCvc: card.cardCvc,
-  })
+  state.cards.push(card)
   // Close the modal when added
   modalName.value = ''
 }

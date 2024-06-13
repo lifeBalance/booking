@@ -77,6 +77,10 @@ watch(
 
 const isValidCardNumber = () => {
   const cardNumber = state.card.cardNumber.number.replace(/\s/g, '')
+  if (cardNumber.length !== 16) {
+    state.card.cardNumber.error = 'Card number must be 16 digits'
+    return
+  }
 
   let sum = 0
   let shouldDouble = false
@@ -98,16 +102,35 @@ const isValidCardNumber = () => {
   }
 }
 
+const isValidExpiry = (expiryDate) => {
+  const expiry = expiryDate.replace(/\//g, '')
+  if (expiry.length !== 4) {
+    state.card.cardExpiry.error = 'Expiry must be 4 digits'
+  } else {
+    state.card.cardExpiry.error = ''
+  }
+}
+
+const isValidCvc = (cvc) => {
+  if (cvc.length === 3) {
+    state.card.cardCvc.error = ''
+  } else {
+    state.card.cardCvc.error = 'CVC must be 3 digits'
+  }
+}
+
 // CARD NUMBER HANDLERS
 const handleCardNumberKeydown = (event) => {
   const noWhiteSpace = state.card.cardNumber.number.replace(/\s/g, '')
   const regex = /^\d+$/
 
+  const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight']
+
   // Clear the whitespace from the card number
   // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
-  if (noWhiteSpace.length >= 16 && event.key !== 'Backspace') {
+  if (noWhiteSpace.length >= 16 && !allowedKeys.includes(event.key)) {
     event.preventDefault()
-  } else if (event.key !== 'Backspace' && !regex.test(event.key)) {
+  } else if (!allowedKeys.includes(event.key) && !regex.test(event.key)) {
     // Check if the entered string contains only digits
     // Prevent non-numeric input
     event.preventDefault()
@@ -129,35 +152,37 @@ const handleCardNumberInput = (event) => {
 
 const handleCardExpiryKeydown = (event) => {
   console.log('card number keydown:', event.key)
+  const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight']
+
   // Clear the whitespace from the card number
   const content = state.card.cardExpiry.expiry.replace(/\//g, '')
   console.log('content keydown:', content)
   // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
   const regex = /^\d+$/
   // Prevent non-numeric input
-  if (!regex.test(event.key) && event.key !== 'Backspace') {
+  if (!regex.test(event.key) && !allowedKeys.includes(event.key)) {
     event.preventDefault()
   } else if (content.length === 0 && parseInt(event.key) > 3) {
     event.preventDefault()
   } else if (
     content.length === 1 &&
     parseInt(content + event.key) > 31 &&
-    event.key !== 'Backspace'
+    !allowedKeys.includes(event.key)
   ) {
     event.preventDefault()
   } else if (
     content.length === 2 &&
     !regex.test(event.key) &&
-    event.key !== 'Backspace'
+    !allowedKeys.includes(event.key)
   ) {
     event.preventDefault()
   } else if (
     content.length === 3 &&
     !regex.test(event.key) &&
-    event.key !== 'Backspace'
+    !allowedKeys.includes(event.key)
   ) {
     event.preventDefault()
-  } else if (content.length >= 4 && event.key !== 'Backspace') {
+  } else if (content.length >= 4 && !allowedKeys.includes(event.key)) {
     event.preventDefault()
   }
 }
@@ -172,9 +197,11 @@ const handleCardExpiryInput = (event) => {
 }
 
 const handleCardCvcKeydown = (event) => {
+  const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight']
+
   console.log('card cvc keydown:', event.key)
   // Prevent input when the entered string contains 3 digits and the key pressed is not a backspace
-  if (event.target.value.length >= 3 && event.key !== 'Backspace') {
+  if (event.target.value.length >= 3 && !allowedKeys.includes(event.key)) {
     event.preventDefault()
   }
 }
@@ -240,6 +267,7 @@ const handleCardCvcKeydown = (event) => {
             :value="state.card.cardExpiry.expiry"
             @input="handleCardExpiryInput"
             @keydown="handleCardExpiryKeydown"
+            @blur="isValidExpiry(state.card.cardExpiry.expiry)"
           />
           <span class="error">{{ state.card.cardExpiry.error }}</span>
         </div>
@@ -254,8 +282,9 @@ const handleCardCvcKeydown = (event) => {
             required
             autocomplete="off"
             :value="state.card.cardCvc.cvc"
-            @keypress="handleCardNumberKeypress"
+            @input="state.card.cardCvc.cvc = $event.target.value"
             @keydown="handleCardCvcKeydown"
+            @blur="isValidCvc(state.card.cardCvc.cvc)"
           />
           <span class="error">{{ state.card.cardCvc.error }}</span>
         </div>
@@ -342,7 +371,7 @@ input {
 
 .error {
   display: block;
-  color: rgb(var(--color-accent-2));
+  color: rgba(var(--color-accent-2), 0.9);
   font-size: 0.8rem;
   padding-left: 0.5rem;
   margin-top: 0.3rem;
