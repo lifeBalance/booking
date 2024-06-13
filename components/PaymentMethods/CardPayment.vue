@@ -23,6 +23,9 @@ const hideDigits = (cardNumber, numCharsToHide) => {
 const iconName = (cardBrand) => {
   if (cardBrand === 'visa') return 'fa6-brands:cc-visa'
   else if (cardBrand === 'mastercard') return 'fa6-brands:cc-mastercard'
+  else if (cardBrand === 'jcb') return 'fa6-brands:cc-jcb'
+  else if (cardBrand === 'amex') return 'fa6-brands:cc-amex'
+  else return 'ic:baseline-credit-card'
 }
 </script>
 

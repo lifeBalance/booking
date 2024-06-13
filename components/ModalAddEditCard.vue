@@ -25,11 +25,11 @@ const props = defineProps({
 
 const state = reactive({
   card: {
-    cardNumber: props.card.cardNumber,
-    cardName: props.card.cardName,
-    cardExpiry: props.card.cardExpiry,
-    cardCvc: props.card.cardCvc,
-    cardBrand: props.card.cardBrand,
+    cardNumber: { number: props.card.cardNumber, error: '' },
+    cardName: { name: props.card.cardName, error: '' },
+    cardExpiry: { expiry: props.card.cardExpiry, error: '' },
+    cardCvc: { cvc: props.card.cardCvc, error: '' },
+    cardBrand: { brand: props.card.cardBrand },
   },
 })
 
@@ -45,15 +45,39 @@ const handleSaveCard = () => {
   console.log(state.card)
   // Call the function passed from the parent component
   props.handlers.saveCard({
-    cardBrand: state.card.cardBrand,
-    cardNumber: state.card.cardNumber,
-    cardName: state.card.cardName,
-    cardExpiry: state.card.cardExpiry,
-    cardCvc: state.card.cardCvc,
+    cardBrand: state.card.cardBrand.brand,
+    cardNumber: state.card.cardNumber.number,
+    cardName: state.card.cardName.name,
+    cardExpiry: state.card.cardExpiry.expiry,
+    cardCvc: state.card.cardCvc.cvc,
   })
 }
 
-const isValidCardNumber = (cardNumber) => {
+watch(
+  state.card,
+  (newVal) => {
+    const number = newVal.cardNumber.number
+    // console.log('card changed:', newVal)
+
+    // Check the card brand
+    if (number.startsWith('4')) {
+      state.card.cardBrand.brand = 'visa'
+    } else if (number.startsWith('5')) {
+      state.card.cardBrand.brand = 'mastercard'
+    } else if (number.startsWith('3')) {
+      state.card.cardBrand.brand = 'amex'
+    } else if (number.startsWith('35')) {
+      state.card.cardBrand.brand = 'jcb'
+    } else {
+      state.card.cardBrand.brand = 'unknown'
+    }
+  },
+  { deep: true }
+)
+
+const isValidCardNumber = () => {
+  const cardNumber = state.card.cardNumber.number.replace(/\s/g, '')
+
   let sum = 0
   let shouldDouble = false
   for (let i = cardNumber.length - 1; i >= 0; i--) {
@@ -67,43 +91,53 @@ const isValidCardNumber = (cardNumber) => {
     shouldDouble = !shouldDouble
   }
 
-  return sum % 10 === 0
+  if (sum % 10 === 0) {
+    state.card.cardNumber.error = ''
+  } else {
+    state.card.cardNumber.error = 'Invalid card number'
+  }
 }
 
+// CARD NUMBER HANDLERS
 const handleCardNumberKeydown = (event) => {
-  console.log('card number keydown:', event.key)
+  const noWhiteSpace = state.card.cardNumber.number.replace(/\s/g, '')
+  const regex = /^\d+$/
+
   // Clear the whitespace from the card number
-  const noWhiteSpace = state.card.cardNumber.replace(/\s/g, '')
   // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
   if (noWhiteSpace.length >= 16 && event.key !== 'Backspace') {
+    event.preventDefault()
+  } else if (event.key !== 'Backspace' && !regex.test(event.key)) {
+    // Check if the entered string contains only digits
+    // Prevent non-numeric input
     event.preventDefault()
   }
 }
 
-const handleCardNumberKeypress = (event) => {
-  console.log('card keypress:', event.key)
-  // Check if the entered string contains only digits
-  const regex = /^\d+$/
-  // Prevent non-numeric input
-  if (!regex.test(event.key)) {
-    event.preventDefault()
+const handleCardNumberInput = (event) => {
+  console.log('card number input:', event.target.value)
+  // Remove spaces from the card number
+  let noWhiteSpace = event.target.value.replace(/\s/g, '')
+
+  // // Add a space after every 4 digits
+  state.card.cardNumber.number = noWhiteSpace.replace(/(.{4})(?=\d)/g, '$1 ')
+
+  if (noWhiteSpace.length === 16) {
+    isValidCardNumber()
   }
 }
 
 const handleCardExpiryKeydown = (event) => {
   console.log('card number keydown:', event.key)
   // Clear the whitespace from the card number
-  const content = state.card.cardExpiry.replace(/\s/g, '').replace(/\//g, '')
+  const content = state.card.cardExpiry.expiry.replace(/\//g, '')
   console.log('content keydown:', content)
   // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
   const regex = /^\d+$/
   // Prevent non-numeric input
   if (!regex.test(event.key) && event.key !== 'Backspace') {
     event.preventDefault()
-  } else if (
-    content.length === 0 &&
-    parseInt(event.key) > 3
-  ) {
+  } else if (content.length === 0 && parseInt(event.key) > 3) {
     event.preventDefault()
   } else if (
     content.length === 1 &&
@@ -113,13 +147,13 @@ const handleCardExpiryKeydown = (event) => {
     event.preventDefault()
   } else if (
     content.length === 2 &&
-    parseInt(event.key) > 1 &&
+    !regex.test(event.key) &&
     event.key !== 'Backspace'
   ) {
     event.preventDefault()
   } else if (
     content.length === 3 &&
-    parseInt(event.key) > 2 &&
+    !regex.test(event.key) &&
     event.key !== 'Backspace'
   ) {
     event.preventDefault()
@@ -134,16 +168,7 @@ const handleCardExpiryInput = (event) => {
   let noWhiteSpace = event.target.value.replace(/\s/g, '')
 
   // Add a slash after every 2 digits
-  state.card.cardExpiry = noWhiteSpace.replace(/(\d{2})(?=\d)/g, '$1/')
-}
-
-const handleCardNumberInput = (event) => {
-  console.log('card number input:', event.target.value)
-  // Remove spaces from the card number
-  let noWhiteSpace = event.target.value.replace(/\s/g, '')
-
-  // Add a space after every 4 digits
-  state.card.cardNumber = noWhiteSpace.replace(/(.{4})/g, '$1 ')
+  state.card.cardExpiry.expiry = noWhiteSpace.replace(/(\d{2})(?=\d)/g, '$1/')
 }
 
 const handleCardCvcKeydown = (event) => {
@@ -175,11 +200,12 @@ const handleCardCvcKeydown = (event) => {
           name="card-number"
           required
           autocomplete="off"
-          :value="state.card.cardNumber"
+          :value="state.card.cardNumber.number"
           @input="handleCardNumberInput"
-          @keypress="handleCardNumberKeypress"
           @keydown="handleCardNumberKeydown"
+          @blur="isValidCardNumber(state.card.cardNumber.number)"
         />
+        <span class="error">{{ state.card.cardNumber.error }}</span>
       </div>
 
       <div class="card-name">
@@ -191,8 +217,14 @@ const handleCardCvcKeydown = (event) => {
           name="card-name"
           required
           autocomplete="off"
-          v-model="state.card.cardName"
+          v-model="state.card.cardName.name"
+          @blur="
+            state.card.cardName.error = state.card.cardName.name
+              ? ''
+              : 'Name is required'
+          "
         />
+        <span class="error">{{ state.card.cardName.error }}</span>
       </div>
 
       <div class="expiry-code">
@@ -205,10 +237,11 @@ const handleCardCvcKeydown = (event) => {
             name="expiry"
             required
             autocomplete="off"
-            :value="state.card.cardExpiry"
+            :value="state.card.cardExpiry.expiry"
             @input="handleCardExpiryInput"
             @keydown="handleCardExpiryKeydown"
           />
+          <span class="error">{{ state.card.cardExpiry.error }}</span>
         </div>
 
         <div class="cvc">
@@ -220,10 +253,11 @@ const handleCardCvcKeydown = (event) => {
             name="cvd"
             required
             autocomplete="off"
-            :value="state.card.cardCvc"
+            :value="state.card.cardCvc.cvc"
             @keypress="handleCardNumberKeypress"
             @keydown="handleCardCvcKeydown"
           />
+          <span class="error">{{ state.card.cardCvc.error }}</span>
         </div>
       </div>
     </div>
@@ -246,6 +280,7 @@ const handleCardCvcKeydown = (event) => {
   justify-content: space-between;
   gap: 2rem;
   padding: 1rem;
+  margin: 0 2.5%;
   border-radius: 7px;
   border: 0.5px solid rgba(var(--color-text-3), 0.9);
 
@@ -272,7 +307,7 @@ const handleCardCvcKeydown = (event) => {
 .modal-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.8rem;
 
   label {
     display: inline-block;
@@ -303,6 +338,15 @@ input {
     outline: none;
     box-shadow: 0 0 0 0.2rem rgba(var(--color-accent-1), 0.9);
   }
+}
+
+.error {
+  display: block;
+  color: rgb(var(--color-accent-2));
+  font-size: 0.8rem;
+  padding-left: 0.5rem;
+  margin-top: 0.3rem;
+  position: absolute;
 }
 
 .btn-box {
