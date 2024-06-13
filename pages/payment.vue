@@ -1,4 +1,6 @@
 <script setup>
+import YourOrder from '~/components/YourOrder.vue';
+
 // Edit/Add card modal
 const modalName = ref('')
 
@@ -79,6 +81,8 @@ const saveCard = (card) => {
   <section class="payment">
     <Stepper activeStep="3" />
 
+    <YourOrder />
+
     <div class="payment-methods">
       <h2><Icon name="ic:baseline-credit-card" /> Payment Methods</h2>
 
@@ -145,6 +149,7 @@ const saveCard = (card) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 3rem;
 }
 
 .add-card {
@@ -181,7 +186,6 @@ const saveCard = (card) => {
   flex-direction: column;
   justify-content: center;
   gap: 2rem;
-  padding: 4rem 0;
 
   h2 {
     display: flex;

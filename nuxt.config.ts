@@ -2,6 +2,9 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['nuxt-icon'],
+  experimental: {
+    payloadExtraction: true
+  },
   components: [
     {
       path: '~/components',
