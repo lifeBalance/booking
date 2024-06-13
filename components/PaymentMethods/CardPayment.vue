@@ -2,9 +2,11 @@
 const props = defineProps({
   card: Object,
   deleteCard: Function,
+  editCard: Function,
 })
-const emits = defineEmits(['selectCard', 'deleteCard', 'editCard'])
+const emits = defineEmits(['selectCard'])
 const { cardBrand, cardNumber, cardExpiry } = props.card
+console.table(props.card)
 
 const hideDigits = (cardNumber, numCharsToHide) => {
   // Split string into array
@@ -40,7 +42,7 @@ const iconName = (cardBrand) => {
     </div>
 
     <div class="btn-box">
-      <button class="edit" @click="props.deleteCard(cardNumber)">
+      <button class="edit" @click="props.editCard(props.card.cardNumber)">
         <Icon class="icon" name="ph:pencil" />
       </button>
       <button class="delete" @click="props.deleteCard(props.card.cardNumber)">

@@ -18,25 +18,36 @@ let cards = ref([
     cardCvc: '059',
   },
 ])
+let editedCard = ref(null)
 
 const otherMethods = [
   { brand: 'MobilePay', details: 'Pay with the MobilePay app' },
   { brand: 'PayTrail', details: 'Pay with the PayTrail app' },
 ]
 
+const deleteCard = (number) => {
+  console.log('delete card', number)
+  cards.value = cards.value.filter((item) => item.cardNumber !== number)
+  console.log('cards:', cards)
+}
+
+const editCard = (cardNumber) => {
+  console.log('edit card:', cardNumber)
+  editedCard.value = cards.value.find((item) => item.cardNumber === cardNumber)
+  modalName.value = 'editCard'
+}
+
 const handleCloseCardModal = () => {
   console.log('payment: close modal')
   modalName.value = ''
   document.body.style.overflow = 'auto' // Allow scrolling
+  if (editedCard.value) {
+    editedCard.value = null
+  }
 }
 
 const handleSelectCard = (cardNumber) => {
   console.log('select card:', cardNumber)
-}
-
-const handleEditCard = (cardNumber) => {
-  console.log('edit card:', cardNumber)
-  modalName.value = 'editCard'
 }
 
 const handleAddCard = () => {
@@ -51,12 +62,16 @@ const saveCard = (card) => {
   cards.value.push(card)
   // Close the modal when added
   modalName.value = ''
-}
-
-const deleteCard = (number) => {
-  console.log('delete card', number)
-  cards.value = cards.value.filter((item) => item.cardNumber !== number)
-  console.log('cards:', cards)
+  if (editedCard.value) {
+    // Update the card
+    cards.value = cards.value.map((item) => {
+      if (item.cardNumber === editedCard.value.cardNumber) {
+        return card
+      }
+      return item
+    })
+    editedCard.value = null
+  }
 }
 </script>
 
@@ -77,8 +92,8 @@ const deleteCard = (number) => {
             :card="card"
             :class="{ separator: idx < cards.length - 1 }"
             :deleteCard="deleteCard"
+            :editCard="editCard"
             @selectCard="handleSelectCard"
-            @editCard="handleEditCard"
           />
         </div>
       </PaymentMethod>
@@ -114,10 +129,12 @@ const deleteCard = (number) => {
         :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
       />
 
-      <div class="editCard" v-else-if="modalName === 'editCard'">
-        <h1>Edit card</h1>
-        <button @click="handleCloseCardModal">Close Modal</button>
-      </div>
+      <ModalAddEditCard
+        v-else-if="modalName === 'editCard'"
+        title="Edit Credit / Debit Card"
+        :card="editedCard"
+        :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
+      />
     </Modal>
   </section>
 </template>
@@ -178,7 +195,7 @@ const deleteCard = (number) => {
 
   .no-cards {
     color: rgb(var(--color-text-2));
-    padding: 0.5rem;
+    padding: 1rem;
   }
 }
 
