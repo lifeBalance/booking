@@ -61,6 +61,7 @@ const handleCloseCardModal = () => {
 const handleSelectPayment = (paymentMethod) => {
   console.log('selected payment:', paymentMethod)
   loading.value = true // set loading state to mimic backend payment processing
+  document.body.style.overflow = 'hidden' // When modal is up, avoid scrolling
 
   setTimeout(() => {
     loading.value = false
@@ -193,7 +194,7 @@ const saveCard = (card) => {
       gap: 1rem;
       color: rgb(var(--color-accent-1));
       border: 1px solid rgb(var(--color-accent-1));
-      border-radius: 7px;
+      border-radius: var(--radius-default);
       padding: 0.5rem 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
