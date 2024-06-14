@@ -40,6 +40,7 @@
   --color-accent-2: 255, 0, 0;
   --color-accent-3: 29, 137, 232;
   --page-width: 100%;
+  --radius-default: 7px;
 }
 
 body {

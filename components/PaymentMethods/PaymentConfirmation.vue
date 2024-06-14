@@ -23,7 +23,7 @@ const emits = defineEmits(['selectPayment'])
   padding: 2rem;
   background-color: rgb(var(--color-bg-2));
   border: 1px solid rgba(var(--color-text-3), 0.3);
-  border-radius: 7px;
+  border-radius: var(--radius-default);
 
   h3 {
     padding-bottom: 0.5rem;
@@ -46,7 +46,7 @@ const emits = defineEmits(['selectPayment'])
     color: rgb(var(--color-accent-1));
     background-color: transparent;
     border: 1px solid rgb(var(--color-accent-1));
-    border-radius: 7px;
+    border-radius: var(--radius-default);
     padding: 0.5rem 1rem;
     cursor: pointer;
     transition: all 0.3s ease;

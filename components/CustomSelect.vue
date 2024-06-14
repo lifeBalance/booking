@@ -33,7 +33,7 @@ const { options, label } = defineProps(['label', 'options'])
     color: rgb(var(--color-text-2));
     border: 1px solid rgba(var(--color-text-1), 0.2);
     background-color: rgba(var(--color-bg), 0.9);
-    border-radius: 7px;
+    border-radius: var(--radius-default);
     box-shadow: 0 1px 2px rgba(var(--color-bg), 0.1);
     width: 100%;
     cursor: pointer;
@@ -46,8 +46,8 @@ const { options, label } = defineProps(['label', 'options'])
     right: 0;
     height: 100%;
     width: 2rem;
-    border-top-right-radius: 7px;
-    border-bottom-right-radius: 7px;
+    border-top-right-radius: var(--radius-default);
+    border-bottom-right-radius: var(--radius-default);
     background-color: rgb(var(--color-text-2), 0.7);
     pointer-events: none;
   }

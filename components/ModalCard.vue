@@ -33,7 +33,7 @@ const { title, date, time, cancelHandler, nextHandler } = defineProps([
   justify-content: space-between;
   gap: 2rem;
   padding: 1rem;
-  border-radius: 7px;
+  border-radius: var(--radius-default);
   border: 0.5px solid rgba(var(--color-text-3), 0.9);
   color: white;
 }

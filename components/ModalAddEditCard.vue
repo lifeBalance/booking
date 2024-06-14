@@ -330,7 +330,7 @@ const handleCardCvcKeydown = (event) => {
   gap: 2rem;
   padding: 1rem;
   margin: 0 2.5%;
-  border-radius: 7px;
+  border-radius: var(--radius-default);
   border: 0.5px solid rgba(var(--color-text-3), 0.9);
 
   header {
@@ -380,7 +380,7 @@ input {
   color: rgb(var(--color-text-2));
   border: 1px solid rgba(var(--color-text-1), 0.2);
   background-color: rgb(var(--color-bg));
-  border-radius: 7px;
+  border-radius: var(--radius-default);
   width: 100%;
 
   &:focus {

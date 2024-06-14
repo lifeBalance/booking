@@ -31,7 +31,7 @@ const { img, name, text, testimonial } = defineProps([
   gap: 2rem;
   background-color: #23262d;
   padding: 1rem;
-  border-radius: 7px;
+  border-radius: var(--radius-default);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   color: white;
   min-height: 12rem;

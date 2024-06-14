@@ -113,7 +113,7 @@ section {
 
     & .btn {
       border: 1px solid rgb(var(--color-accent-1));
-      border-radius: 7px;
+      border-radius: var(--radius-default);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -169,7 +169,7 @@ section {
     min-height: 100%;
     background-size: cover;
     background-position: center;
-    border-radius: 7px;
+    border-radius: var(--radius-default);
   }
 }
 

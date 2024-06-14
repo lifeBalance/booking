@@ -135,7 +135,7 @@ const selectOptions = [
         color: rgb(var(--color-text-2));
         border: 1px solid rgba(var(--color-text-1), 0.2);
         background-color: rgba(var(--color-bg), 0.9);
-        border-radius: 7px;
+        border-radius: var(--radius-default);
         box-shadow: 0 1px 2px rgba(var(--color-bg), 0.1);
         width: 100%;
       }
