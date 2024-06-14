@@ -165,7 +165,7 @@ section {
 
   .armory-pic {
     display: block;
-    background-image: url('~/assets/images/armory.jpeg');
+    background-image: url('~/assets/images/armory.jpg');
     min-height: 100%;
     background-size: cover;
     background-position: center;

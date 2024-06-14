@@ -135,7 +135,7 @@ h2 {
     display: block;
     border-radius: 0.5rem;
     min-width: 100%;
-    background-image: url('~/assets/images/armory2.jpeg');
+    background-image: url('~/assets/images/testimonials.jpg');
     background-size: cover;
     background-position: center;
   }

@@ -1,7 +1,9 @@
-<script setup></script>
+<script setup>
+import heroImg from '~/assets/images/hero.jpg'
+</script>
 
 <template>
-  <section>
+  <section :style="`--hero-image: url(${heroImg})`">
     <h1>Gun Range Demo</h1>
 
     <div class="inner-container">
@@ -18,7 +20,7 @@
 <style lang="scss" scoped>
 section {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('~/assets/images/hero7.jpeg');
+    var(--hero-image);
   background-size: cover;
   background-position: center;
   min-height: 100vh;

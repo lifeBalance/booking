@@ -217,7 +217,7 @@ const selectOptions = [
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       min-width: 50%;
-      background-image: url('~/assets/images/armory4.jpeg');
+      background-image: url('~/assets/images/contact-form.jpg');
       background-size: cover;
       background-position: center;
     } // & .img-box
