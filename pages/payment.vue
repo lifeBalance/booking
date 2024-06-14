@@ -1,8 +1,14 @@
 <script setup>
-import YourOrder from '~/components/YourOrder.vue';
+import PaymentConfirmation from '~/components/PaymentMethods/PaymentConfirmation.vue'
+import YourOrder from '~/components/YourOrder.vue'
+
+const router = useRouter()
 
 // Edit/Add card modal
 const modalName = ref('')
+
+const loading = ref(false)
+const paymentConfirmation = ref(false)
 
 let cards = ref([
   {
@@ -45,11 +51,21 @@ const handleCloseCardModal = () => {
   document.body.style.overflow = 'auto' // Allow scrolling
   if (editedCard.value) {
     editedCard.value = null
+  } else if (paymentConfirmation.value) {
+    paymentConfirmation.value = false
+    // Redirect to home page
+    router.push('/')
   }
 }
 
-const handleSelectCard = (cardNumber) => {
-  console.log('select card:', cardNumber)
+const handleSelectPayment = (paymentMethod) => {
+  console.log('selected payment:', paymentMethod)
+  loading.value = true // set loading state to mimic backend payment processing
+
+  setTimeout(() => {
+    loading.value = false
+    paymentConfirmation.value = true
+  }, 2500)
 }
 
 const handleAddCard = () => {
@@ -97,7 +113,7 @@ const saveCard = (card) => {
             :class="{ separator: idx < cards.length - 1 }"
             :deleteCard="deleteCard"
             :editCard="editCard"
-            @selectCard="handleSelectCard"
+            @selectCard="handleSelectPayment"
           />
         </div>
       </PaymentMethod>
@@ -115,6 +131,7 @@ const saveCard = (card) => {
           :brand="method.brand"
           :details="method.details"
           :class="{ separator: idx < otherMethods.length - 1 }"
+          @selectPayment="handleSelectPayment"
         />
       </PaymentMethod>
     </div>
@@ -140,6 +157,18 @@ const saveCard = (card) => {
         :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
       />
     </Modal>
+
+    <Modal :modalOpen="loading || paymentConfirmation">
+      <section class="loading" v-if="loading">
+        <Icon name="svg-spinners:gooey-balls-1" class="loading-icon" />
+        <p>We're processing your payment...</p>
+      </section>
+
+      <PaymentConfirmation
+        v-else-if="paymentConfirmation"
+        :closeModal="handleCloseCardModal"
+      />
+    </Modal>
   </section>
 </template>
 
@@ -150,56 +179,56 @@ const saveCard = (card) => {
   flex-direction: column;
   justify-content: center;
   gap: 3rem;
-}
 
-.add-card {
-  margin-left: auto;
-  margin-right: 1rem;
-  padding-bottom: 1rem;
+  .add-card {
+    margin-left: auto;
+    margin-right: 1rem;
+    padding-bottom: 1rem;
 
-  .btn {
-    display: flex;
-    width: max-content;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    color: rgb(var(--color-accent-1));
-    border: 1px solid rgb(var(--color-accent-1));
-    border-radius: 7px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    .btn {
+      display: flex;
+      width: max-content;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      color: rgb(var(--color-accent-1));
+      border: 1px solid rgb(var(--color-accent-1));
+      border-radius: 7px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
 
-    &:hover {
-      background-color: rgba(var(--color-accent-1), 0.3);
-      scale: 1.01;
+      &:hover {
+        background-color: rgba(var(--color-accent-1), 0.3);
+        scale: 1.01;
+      }
+    }
+
+    .icon {
+      font-size: 1.5rem;
     }
   }
 
-  .icon {
-    font-size: 1.5rem;
-  }
-}
-
-.payment-methods {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2rem;
-
-  h2 {
+  .payment-methods {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    text-align: center;
-    color: rgb(var(--color-accent-1));
-    padding-bottom: 1rem;
-  }
+    gap: 2rem;
 
-  .no-cards {
-    color: rgb(var(--color-text-2));
-    padding: 1rem;
+    h2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+      color: rgb(var(--color-accent-1));
+      padding-bottom: 1rem;
+    }
+
+    .no-cards {
+      color: rgb(var(--color-text-2));
+      padding: 1rem;
+    }
   }
 }
 
@@ -228,6 +257,24 @@ const saveCard = (card) => {
 @media (min-width: 1200px) {
   .payment {
     padding: 6rem 12%;
+  }
+}
+</style>
+
+<style>
+.loading {
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  color: rgb(var(--color-text-2));
+  transition: all 0.3s ease;
+
+  .loading-icon {
+    font-size: 3rem;
+    color: rgb(var(--color-accent-1));
   }
 }
 </style>

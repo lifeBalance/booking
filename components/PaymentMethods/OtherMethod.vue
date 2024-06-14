@@ -3,12 +3,13 @@ const props = defineProps({
   brand: String,
   details: String,
 })
+const emits = defineEmits(['selectPayment'])
 
 const { brand, details } = props
 </script>
 
 <template>
-  <section class="other-method">
+  <section class="other-method" @click="emits('selectPayment', brand)">
     <h3>{{ brand }}</h3>
     <p>{{ details }}</p>
   </section>

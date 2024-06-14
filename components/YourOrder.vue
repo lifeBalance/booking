@@ -1,7 +1,7 @@
 <script setup>
 const basket = ref([
   {
-    name: 'Shooting range - 11-12-2024',
+    name: 'Shooting range - 11.12.2024',
     qty: 1,
     price: 70,
   },

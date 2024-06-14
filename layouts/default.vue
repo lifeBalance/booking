@@ -21,6 +21,7 @@
 
 #just-to-see-the-color-swatches {
   --color-bg: rgb(24, 24, 26);
+  --color-bg-2: rgb(35, 38, 45);
   --color-text-1: rgb(255, 255, 255);
   --color-text-2: rgb(213, 220, 231);
   --color-text-3: rgb(96, 96, 94);
@@ -31,6 +32,7 @@
 
 :root {
   --color-bg: 24, 24, 26;
+  --color-bg-2: 35, 38, 45;
   --color-text-1: 255, 255, 255;
   --color-text-2: 213, 220, 231;
   --color-text-3: 96, 96, 94;
