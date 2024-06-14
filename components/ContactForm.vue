@@ -85,8 +85,6 @@ const selectOptions = [
     background-color: rgb(var(--color-bg-2));
     padding: 1rem;
     border-radius: var(--radius-default);
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -216,6 +214,8 @@ const selectOptions = [
       display: block;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+      border-top-right-radius: var(--radius-default);
+      border-bottom-right-radius: var(--radius-default);
       min-width: 50%;
       background-image: url('~/assets/images/contact-form.jpg');
       background-size: cover;

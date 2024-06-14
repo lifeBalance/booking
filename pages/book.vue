@@ -259,7 +259,7 @@ const handleNext = () => {
     flex-grow: 1;
     align-self: stretch;
     margin-top: 2rem;
-    background-image: url('~/assets/images/hero.jpeg');
+    background-image: url('~/assets/images/armory.jpg');
     background-size: cover;
     background-position: center;
   }

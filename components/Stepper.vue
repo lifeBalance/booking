@@ -36,7 +36,14 @@ const { activeStep } = defineProps(['activeStep'])
           >
             {{ step.position }}
           </span>
-          <span class="step-name">{{ step.route }}</span>
+          <span
+            class="step-name"
+            :class="{
+              active: activeStep == step.position,
+              completed: step.position < activeStep,
+            }"
+            >{{ step.route }}</span
+          >
         </NuxtLink>
 
         <div
@@ -94,6 +101,12 @@ span.completed,
 span.active {
   background-color: rgb(var(--color-bg));
   border: 1px solid rgb(var(--color-accent-1));
+  color: rgb(var(--color-accent-1));
+}
+
+.step-name.completed,
+.step-name.active {
+  border: none;
   color: rgb(var(--color-accent-1));
 }
 

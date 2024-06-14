@@ -3,6 +3,7 @@ import heroImg from '~/assets/images/hero.jpg'
 </script>
 
 <template>
+  <!-- Weird way of importing images just for the sake of experimenting. -->
   <section :style="`--hero-image: url(${heroImg})`">
     <h1>Gun Range Demo</h1>
 
