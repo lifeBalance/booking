@@ -82,9 +82,9 @@ const selectOptions = [
   margin: 0 auto;
 
   & .form-box {
-    background-color: #23262d;
+    background-color: rgb(var(--color-bg-2));
     padding: 1rem;
-    border-radius: 7px;
+    border-radius: var(--radius-default);
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     display: flex;
@@ -170,13 +170,14 @@ const selectOptions = [
 
 /* MEDIA QUERIES */
 @media (min-width: 350px) {
+  .contact-form {
+    & .form-box {
+      border-radius: var(--radius-default);
+    }
+  }
 }
 
 @media (min-width: 480px) {
-  .contact-form {
-    padding-left: 5%;
-    padding-right: 5%;
-  }
 }
 
 @media (min-width: 768px) {
@@ -213,7 +214,6 @@ const selectOptions = [
     & .img-box {
       grid-column: 2;
       display: block;
-      border-radius: 0.5rem;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       min-width: 50%;
