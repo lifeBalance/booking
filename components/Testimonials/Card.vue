@@ -32,13 +32,13 @@ const { img, name, text, testimonial } = defineProps([
   background-color: #23262d;
   padding: 1rem;
   border-radius: var(--radius-default);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   color: white;
   min-height: 12rem;
   transition: all 0.3s ease-in-out;
 }
 
 .card:hover {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   scale: 1.01;
 }
 
@@ -49,11 +49,11 @@ const { img, name, text, testimonial } = defineProps([
   text-indent: 5%;
   padding-top: 1rem;
   padding-left: 5rem;
+  background-color: transparent;
 }
 
 .testimonial::after {
   content: '“';
-  transform: scaleY(-1);
   font-family: 'Arial', serif;
   font-size: 12rem;
   color: rgba(var(--color-text-3), 0.5);
@@ -61,6 +61,7 @@ const { img, name, text, testimonial } = defineProps([
   top: -8rem;
   left: -1rem;
   transform: translateZ(-1px) scaleY(-1);
+  z-index: -2;
   width: 25%;
 }
 
@@ -78,14 +79,16 @@ const { img, name, text, testimonial } = defineProps([
 .author {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: flex-end;
 
   h4 {
     color: rgb(var(--color-text-2));
+    margin-bottom: 0.5rem;
   }
 
   p {
     color: rgb(var(--color-text-3));
+    margin-bottom: 0.5rem;
   }
 }
 </style>

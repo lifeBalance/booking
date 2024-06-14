@@ -119,8 +119,9 @@ h2 {
   h2 {
     font-size: 2.5rem;
   }
+
   .card-list {
-    max-width: 0;
+    max-width: 50%;
     gap: 2rem;
     padding: 0;
   }
