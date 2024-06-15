@@ -1,41 +1,11 @@
 <script setup>
-// Reactive variable to control the theme switch (input checkbox)
-const isChecked = ref(false)
-
-// Function to toggle the theme based on the input checkbox
-const toggleCheck = () => {
-  isChecked.value = !isChecked.value
-}
-
-onMounted(() => {
-  // Check if the user has a theme preference set in localStorage
-  const localStorageTheme = localStorage.getItem('theme')
-  // Check if the user has a  system's theme preference
-  const theme = window.matchMedia('(prefers-color-scheme: dark)')
-
-  // Set the theme based on the user's preference (system or local storage)
-  if (localStorageTheme) {
-    document.documentElement.setAttribute('data-theme', localStorageTheme)
-    isChecked.value = localStorageTheme === 'dark'
-  } else if (theme.matches) {
-    document.documentElement.setAttribute('data-theme', 'dark')
-    isChecked.value = true
-  } else {
-    document.documentElement.setAttribute('data-theme', 'light')
-    isChecked.value = false
-  }
-})
-
-watch(isChecked, (newVal) => {
-  localStorage.setItem('theme', newVal ? 'dark' : 'light')
-  document.documentElement.setAttribute('data-theme', newVal ? 'dark' : 'light')
-})
-console.log('Switch mounted', isChecked.value)
+// Composable (aka custom hook) to manage the theme, state and toggle function.
+const { isDark, toggleTheme } = useTheme()
 </script>
 
 <template>
-  <div class="switch" @click="toggleCheck" :data-toggled="isChecked">
-    <input type="checkbox" name="switch" v-model="isChecked" />
+  <div class="switch" @click="toggleTheme" :data-toggled="isDark">
+    <input type="checkbox" name="switch" v-model="isDark" />
     <div class="circle"></div>
     <Icon name="ph:sun" class="icon-sun" />
     <Icon name="ph:moon" class="icon-moon" />
