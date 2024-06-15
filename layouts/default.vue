@@ -30,8 +30,21 @@
   --color-accent-3: rgb(29, 137, 232);
 }
 
-:root {
+html[data-theme='dark'] {
   --color-bg: 24, 24, 26;
+  --color-bg-2: 35, 38, 45;
+  --color-text-1: 255, 255, 255;
+  --color-text-2: 213, 220, 231;
+  --color-text-3: 96, 96, 94;
+  --color-accent-1: 253, 230, 138;
+  --color-accent-2: 255, 0, 0;
+  --color-accent-3: 29, 137, 232;
+  --page-width: 100%;
+  --radius-default: 7px;
+}
+
+html[data-theme='light'] {
+  --color-bg: 213, 220, 231;
   --color-bg-2: 35, 38, 45;
   --color-text-1: 255, 255, 255;
   --color-text-2: 213, 220, 231;

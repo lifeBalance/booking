@@ -35,7 +35,7 @@ function scrollingHandler() {
     document.documentElement.scrollTop ||
     document.body.scrollTop
 
-    // window.removeEventListener('scroll', scrollingHandler)
+  // window.removeEventListener('scroll', scrollingHandler)
   if (currentScrollTop > lastScrollTop) {
     // When the user scrolls down
     console.log('downscroll', currentScrollTop, lastScrollTop)
@@ -47,7 +47,7 @@ function scrollingHandler() {
   }
 
   // In Safari, the window.scrollY can become negative when the user scrolls
-  // like a maniac, due to the scroll inertia; hence we need this, so the 
+  // like a maniac, due to the scroll inertia; hence we need this, so the
   // currentScrollTop never goes below 0.
   lastScrollTop = currentScrollTop > 0 ? currentScrollTop : 0
   console.log('scrolling')
@@ -65,7 +65,7 @@ function scrollingHandler() {
       <ul>
         <li>
           <NuxtLink class="main-nav-link" to="/" @click="closeMainNav"
-          >Home</NuxtLink
+            >Home</NuxtLink
           >
         </li>
         <!-- <li style="color: white">y: {{ currentScrollTopRef }}</li> -->
@@ -73,6 +73,9 @@ function scrollingHandler() {
           <NuxtLink class="main-nav-link" to="/book" @click="closeMainNav"
             >Book</NuxtLink
           >
+        </li>
+        <li>
+          <Switch />
         </li>
       </ul>
     </nav>
