@@ -12,7 +12,6 @@ console.log('isDark (useTheme)', isDark.value)
 // const isDark = useState('isDarkG')
 console.log('isDark (useState)', isDark.value)
 
-
 definePageMeta({
   layout: 'default',
   pageTransition: {
@@ -142,6 +141,11 @@ const handleNext = () => {
             :enable-time-picker="false"
             :dark="isDark"
             menu-class-name="dp-custom-menu"
+            calendar-class-name="dp-custom-calendar"
+            :ui="{
+              // Custom class names
+              calendarCell: 'dp__calendar_item',
+            }"
             :state="datePickerState"
           />
         </div>
@@ -280,8 +284,30 @@ const handleNext = () => {
 </style>
 
 <!-- The date picker custom class can't be scoped styled -->
-<style>
-.dp-custom-menu {
-  box-shadow: 0 0 0.75rem rgb(var(--color-accent-1));
+<style lang="scss">
+:root {
+  /*General*/
+  --dp-cell-border-radius: 2rem; /*Specific border radius for the cells*/
+}
+/* For the date picker to use dp__theme_dark, dark prop must be set to true. */
+.dp__theme_dark {
+  --dp-menu-border-color: rgb(var(--color-accent-1));
+  --dp-success-color: rgb(var(--color-accent-1));
+}
+
+.dp__theme_light {
+  --dp-menu-border-color: rgb(var(--color-accent-1));
+  --dp-success-color: rgb(var(--color-accent-1));
+}
+
+.dp__calendar_item[aria-selected='true'] {
+  .dp__active_date {
+    background-color: rgb(var(--color-accent-1));
+    color: rgb(var(--color-bg));
+  }
+}
+
+.dp__today {
+  border-color: rgb(var(--color-accent-1));
 }
 </style>
