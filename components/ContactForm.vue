@@ -78,8 +78,7 @@ const selectOptions = [
 <style lang="scss" scoped>
 .contact-form {
   display: flex;
-  // grid-template-columns: 1fr;
-  margin: 0 auto;
+  margin: 6rem auto;
 
   & .form-box {
     background-color: rgb(var(--color-bg-2));

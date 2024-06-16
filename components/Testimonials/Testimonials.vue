@@ -61,8 +61,8 @@ section {
   justify-content: center;
   align-items: center;
   color: rgb(var(--color-text-1));
-  padding: 4rem 2.5%;
-  margin: 0 auto;
+  padding: 0 2.5%;
+  margin: 6rem auto;
 }
 
 h2 {
@@ -107,13 +107,13 @@ h2 {
 
 @media (min-width: 768px) {
   section {
-    padding: 6rem 7%;
+    padding: 0 7%;
   }
 }
 
 @media (min-width: 992px) {
   section {
-    padding: 6rem 10%;
+    padding: 0 10%;
   }
 
   h2 {
