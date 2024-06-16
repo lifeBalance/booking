@@ -1,7 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const mainNavSticky = ref(false)
+// Let's set the main nav stickiness in global state so that 
+// it can be accessed/set by other components (e.g. login)
+const mainNavSticky = useState('stickyNav', () => false)
+// const mainNavSticky = ref(false)
 const modalNavExpanded = ref(false)
 const currentScrollTopRef = ref(null)
 

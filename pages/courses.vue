@@ -1,4 +1,12 @@
-<script setup></script>
+<script setup>
+onMounted(() => {
+
+const mainNavSticky = useState('stickyNav')
+mainNavSticky.value = true
+
+console.log('course page mounted - header sticky?', mainNavSticky.value)
+})
+</script>
 
 <template>
   <section>
@@ -14,6 +22,7 @@
 
 <style lang="scss" scoped>
 section {
+  margin-top: 2rem;
   padding: 0 2.5%;
 
   .content {
