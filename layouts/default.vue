@@ -44,12 +44,12 @@ html[data-theme='dark'] {
 }
 
 html[data-theme='light'] {
-  --color-bg: 213, 220, 231;
-  --color-bg-2: 35, 38, 45;
-  --color-text-1: 255, 255, 255;
-  --color-text-2: 213, 220, 231;
-  --color-text-3: 96, 96, 94;
-  --color-accent-1: 253, 230, 138;
+  --color-bg: 226 232 240;
+  --color-bg-2: 213, 220, 231;
+  --color-text-1: 35, 38, 45;
+  --color-text-2: 71 85 105;
+  --color-text-3: 71 85 105;
+  --color-accent-1: 29, 137, 232;
   --color-accent-2: 255, 0, 0;
   --color-accent-3: 29, 137, 232;
   --page-width: 100%;

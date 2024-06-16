@@ -33,7 +33,7 @@ footer {
   box-shadow: 0 0 5rem rgba(var(--color-text-1), 0.2);
   padding: 2rem 0;
   background-color: rgb(var(--color-bg));
-  color: #fff;
+  color: rgb(var(--color-accent-1));
 }
 
 .flex-row-container {
@@ -93,7 +93,7 @@ footer {
 
 a:link,
 a:visited {
-  color: #fff;
+  color: rgb(var(--color-accent-1));
   text-decoration: none;
   font-weight: 600;
 }

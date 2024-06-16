@@ -29,10 +29,10 @@ const { img, name, text, testimonial } = defineProps([
   flex-direction: column;
   justify-content: space-between;
   gap: 2rem;
-  background-color: #23262d;
+  background-color: rgb(var(--color-bg-2));
   padding: 1rem;
   border-radius: var(--radius-default);
-  color: white;
+  color: rgb(var(--color-text-2));
   min-height: 12rem;
   transition: all 0.3s ease-in-out;
 }
