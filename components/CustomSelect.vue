@@ -48,7 +48,7 @@ const { options, label } = defineProps(['label', 'options'])
     width: 2rem;
     border-top-right-radius: var(--radius-default);
     border-bottom-right-radius: var(--radius-default);
-    background-color: rgb(var(--color-text-2), 0.7);
+    background-color: rgb(var(--color-accent-1), 0.7);
     pointer-events: none;
   }
 

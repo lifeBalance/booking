@@ -98,15 +98,14 @@ const selectOptions = [
     }
 
     h2 {
-      color: rgb(var(--color-text-1));
+      color: rgb(var(--color-accent-1));
       margin-bottom: 1rem;
     }
 
     form {
-      display: grid;
-      grid-template-columns: 1fr;
-      row-gap: 2rem;
-      column-gap: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
 
       label {
         color: rgb(var(--color-text-1));
@@ -179,37 +178,15 @@ const selectOptions = [
 
 @media (min-width: 768px) {
   .contact-form {
-    grid-template-columns: 1fr 1fr;
     padding-left: 7%;
     padding-right: 7%;
 
     & .form-box {
-      form {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .full-name,
-      .email {
-        grid-row: 1;
-      }
-
-      .select {
-        grid-column: 1 / -1;
-        /* grid-row: 1; */
-      }
-      .message {
-        grid-row: 3;
-        grid-column: span 2;
-      }
-
-      .btn {
-        grid-column: 1 / -1;
-        /* grid-row: -1; */
-      }
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
     } // & .form-box
 
     & .img-box {
-      grid-column: 2;
       display: block;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
