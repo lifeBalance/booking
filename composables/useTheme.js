@@ -17,9 +17,12 @@ export default function useTheme() {
         document.documentElement.setAttribute('data-theme', 'dark')
         return true
       } else {
-        document.documentElement.setAttribute('data-theme', 'light')
-        return false
+        document.documentElement.setAttribute('data-theme', 'dark')
+        return true
       }
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark')
+      return true
     }
   })
 
@@ -34,6 +37,8 @@ export default function useTheme() {
         'data-theme',
         isDark.value ? 'dark' : 'light'
       )
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark')
     }
   }
 
