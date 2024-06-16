@@ -40,7 +40,6 @@ html[data-theme='dark'] {
   --color-accent-1: 253, 230, 138;
   --color-accent-2: 255, 0, 0;
   --color-accent-3: 29, 137, 232;
-  --page-width: 100%;
   --radius-default: 7px;
   --color-bg-modal: rgba(24, 24, 26, 0.9);
 }
@@ -54,7 +53,6 @@ html[data-theme='light'] {
   --color-accent-1: 29, 137, 232;
   --color-accent-2: 255, 0, 0;
   --color-accent-3: 29, 137, 232;
-  --page-width: 100%;
   --radius-default: 7px;
   --color-bg-modal: rgba(177, 177, 184, 0.9);
 }

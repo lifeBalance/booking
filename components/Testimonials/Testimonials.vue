@@ -29,7 +29,8 @@ const cards = [
     img: salla,
     name: 'Salla',
     text: 'Yoga Instructor',
-    testimonial: 'I had lots of fun shooting my guns at Gun Range Demo. Namaste bitches!',
+    testimonial:
+      'I had lots of fun shooting my guns at Gun Range Demo. Namaste bitches!',
   },
 ]
 </script>
@@ -41,7 +42,7 @@ const cards = [
     <div class="testimonials-wrapper">
       <section class="img-section"></section>
 
-      <ul role="list" class="card-list">
+      <ul role="list" class="testimonials-section">
         <Card
           v-for="card in cards"
           :img="card.img"
@@ -56,39 +57,33 @@ const cards = [
 
 <style lang="scss" scoped>
 section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: rgb(var(--color-text-1));
-  padding: 0 2.5%;
+  max-width: 90%;
   margin: 6rem auto;
 }
 
 h2 {
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   font-weight: 400;
   color: rgb(var(--color-accent-1));
+  padding-bottom: 2rem;
+  // outline: 1px solid red;
 }
 
 .testimonials-wrapper {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
 .img-section {
   display: none;
 }
 
-.card-list {
+.testimonials-section {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: 2rem;
-  padding: 2rem 0;
-  max-width: 90%;
-  margin: 0 auto;
+  // outline: 1px solid green;
 }
 
 /* MEDIA QUERIES */
@@ -96,54 +91,53 @@ h2 {
 }
 
 @media (min-width: 480px) {
-  section {
-    padding: 6rem 5%;
-  }
-
-  .card-list {
-    max-width: 85%;
-  }
 }
 
 @media (min-width: 768px) {
   section {
-    padding: 0 7%;
+    max-width: 85%;
+  }
+
+  h2 {
+    font-size: 2rem;
   }
 }
 
 @media (min-width: 992px) {
   section {
-    padding: 0 10%;
+    max-width: 80%;
   }
 
   h2 {
     font-size: 2.5rem;
   }
 
-  .card-list {
-    max-width: 50%;
-    gap: 2rem;
-    padding: 0;
-  }
-
   .testimonials-wrapper {
-    grid-template-columns: 1fr 1fr;
-    padding: 2rem 0;
+    gap: 2rem;
   }
 
   .img-section {
     display: block;
     border-radius: 0.5rem;
-    min-width: 100%;
+    margin: 0;
+    width: 100%;
+    min-width: 40%;
     background-image: url('~/assets/images/testimonials.jpg');
     background-size: cover;
     background-position: center;
+    // outline: 1px solid greenyellow;
+  }
+
+  .testimonials-section {
+    grid-template-columns: 1fr;
+    margin: 0;
   }
 }
 
 @media (min-width: 1200px) {
-  .card-list {
-    max-width: 70%;
+  .testimonials-section {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
   }
 }
 </style>
