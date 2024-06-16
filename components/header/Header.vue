@@ -1,24 +1,21 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const mainNavExpanded = ref(false)
 const mainNavSticky = ref(false)
+const modalNavExpanded = ref(false)
 const currentScrollTopRef = ref(null)
 
-const toggleMainNav = () => {
+const toggleModalNav = () => {
   console.log('Header: clicked on burger button')
 
-  mainNavExpanded.value = !mainNavExpanded.value
-  if (mainNavExpanded.value) {
+  if (modalNavExpanded.value === false) {
     document.body.style.overflow = 'hidden' // Prevent scrolling
   } else {
     document.body.style.overflow = 'auto' // Allow scrolling
   }
-}
 
-const closeMainNav = () => {
-  mainNavExpanded.value = false
-  document.body.style.overflow = 'auto'
+  // toggle the modalNav value
+  modalNavExpanded.value = !modalNavExpanded.value
 }
 
 // Add the event listener when the component is mounted
@@ -61,29 +58,12 @@ function scrollingHandler() {
       <TargetIcon class="icon" />Gun Range Demo
     </NuxtLink>
 
-    <nav :aria-expanded="mainNavExpanded">
-      <ul>
-        <li>
-          <NuxtLink class="main-nav-link" to="/" @click="closeMainNav"
-            >Home</NuxtLink
-          >
-        </li>
-        <!-- <li style="color: white">y: {{ currentScrollTopRef }}</li> -->
-        <li>
-          <NuxtLink class="main-nav-link" to="/book" @click="closeMainNav"
-            >Book</NuxtLink
-          >
-        </li>
-        <li>
-          <Switch />
-        </li>
-      </ul>
-    </nav>
+    <ModalNav :modalNavExpanded="modalNavExpanded" :toggleModalNav="toggleModalNav" />
 
     <BurgerIcon
       class="burger-btn-main"
-      @burgerClick="toggleMainNav"
-      :mainNavExpanded="mainNavExpanded"
+      @burgerClick="toggleModalNav"
+      :modalNavExpanded="modalNavExpanded"
     />
   </header>
 </template>
@@ -95,7 +75,6 @@ header {
   align-items: center;
   gap: 0.5rem;
   margin: 0 auto;
-  // box-shadow: 0 0 2rem rgba(var(--color-text-1), 0.3);
   padding: 0.8rem 2.5%;
   position: fixed;
   opacity: 0;
@@ -120,7 +99,7 @@ header {
   left: 0;
   right: 0;
   z-index: 1000;
-  background-color: rgb(var(--color-bg));
+  background-color: rgb(var(--color-bg-2));
   transform: translateY(0%);
   opacity: 1;
   visibility: visible;
@@ -160,96 +139,96 @@ a:visited {
   font-weight: 600;
 }
 
-nav {
-  transition: all 0.3s ease-in-out;
-}
+// nav {
+//   transition: all 0.3s ease-in-out;
+// }
 
-nav[aria-expanded='false'] {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  transform: translateX(-100%);
+// nav[aria-expanded='false'] {
+//   position: fixed;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   transform: translateX(-100%);
 
-  ul {
-    transform: translateX(-100%);
-    z-index: 1;
-    min-width: 100%;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    list-style: none;
-  }
-}
+//   ul {
+//     transform: translateX(-100%);
+//     z-index: 1;
+//     min-width: 100%;
+//     min-height: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: space-evenly;
+//     align-items: center;
+//     list-style: none;
+//   }
+// }
 
-nav[aria-expanded='true'] {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  min-height: 100vh;
+// nav[aria-expanded='true'] {
+//   position: fixed;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   z-index: 1;
+//   min-height: 100vh;
 
-  ul {
-    /* Absolute positioning the list, removes the links
-    from the nav, leaving space to the logo. */
-    position: absolute;
+//   ul {
+//     /* Absolute positioning the list, removes the links
+//     from the nav, leaving space to the logo. */
+//     position: absolute;
 
-    z-index: 1;
-    min-width: 100%;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    list-style: none;
+//     z-index: 1;
+//     min-width: 100%;
+//     min-height: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: space-evenly;
+//     align-items: center;
+//     list-style: none;
 
-    li {
-      font-size: 2.5rem;
-      padding: 0.2rem 1rem;
-      width: 100%;
-      text-align: center;
+//     li {
+//       font-size: 2.5rem;
+//       padding: 0.2rem 1rem;
+//       // width: 100%;
+//       text-align: center;
 
-      &:hover {
-        background-color: rgba(var(--color-text-1), 0.1);
+//       &:hover {
+//         background-color: rgba(var(--color-text-1), 0.1);
 
-        a {
-          color: rgb(var(--color-accent-1));
-        }
-      }
-      &:active {
-        background-color: rgba(var(--color-accent-1), 1);
+//         a {
+//           color: rgb(var(--color-accent-1));
+//         }
+//       }
+//       &:active {
+//         background-color: rgba(var(--color-accent-1), 1);
 
-        a {
-          color: rgb(var(--color-bg));
-        }
-      }
-    }
-  }
-}
+//         a {
+//           color: rgb(var(--color-bg));
+//         }
+//       }
+//     }
+//   }
+// }
 
-nav::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(64, 64, 64, 0.905);
-  z-index: 1;
-  transition: all 0.5s ease-in;
-  opacity: 0;
-  visibility: hidden;
-}
+// nav::before {
+//   content: '';
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   background-color: rgba(64, 64, 64, 0.905);
+//   z-index: 1;
+//   transition: all 0.5s ease-in;
+//   opacity: 0;
+//   visibility: hidden;
+// }
 
-nav[aria-expanded='true']::before {
-  opacity: 1;
-  visibility: visible;
-}
+// nav[aria-expanded='true']::before {
+//   opacity: 1;
+//   visibility: visible;
+// }
 
 .burger-btn-main {
   display: block;

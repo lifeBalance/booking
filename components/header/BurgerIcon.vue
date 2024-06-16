@@ -1,6 +1,6 @@
 <script setup>
 const emit = defineEmits(['burgerClick'])
-const { mainNavExpanded } = defineProps(['mainNavExpanded'])
+const { modalNavExpanded } = defineProps(['modalNavExpanded'])
 
 const handleClick = (el) => {
   console.log('clicked on burger button')
@@ -14,7 +14,7 @@ const handleClick = (el) => {
   <button
     @click="handleClick"
     class="burger-btn"
-    :aria-expanded="mainNavExpanded"
+    :aria-expanded="modalNavExpanded"
     data-burger-btn
   >
     <svg class="burger-icon" viewBox="0 0 100 100">
@@ -22,14 +22,14 @@ const handleClick = (el) => {
         class="line top-bun"
         rx="5"
         x="10"
-        :y="mainNavExpanded ? 45 : 25"
+        :y="modalNavExpanded ? 45 : 25"
       ></rect>
       <rect class="line meat" rx="5" x="10" y="50"></rect>
       <rect
         class="line bottom-bun"
         rx="5"
         x="10"
-        :y="mainNavExpanded ? 45 : 75"
+        :y="modalNavExpanded ? 45 : 75"
       ></rect>
     </svg>
   </button>
@@ -56,23 +56,7 @@ const handleClick = (el) => {
   width: 80px;
   stroke: rgb(var(--color-text-2));
   fill: rgb(var(--color-text-2));
-  /* rx: 5; */
 }
-
-/* .line.top-bun {
-  x: 10;
-  y: 25;
-}
-
-.line.meat {
-  x: 10;
-  y: 50;
-}
-
-.line.bottom-bun {
-  x: 10;
-  y: 75;
-} */
 
 .burger-btn:hover .line {
   stroke: rgb(var(--color-accent-1));
@@ -93,11 +77,6 @@ const handleClick = (el) => {
 .burger-btn[aria-expanded='true'] {
   border-color: white;
 }
-
-/* Move the top and bottom buns to the middle */
-/* .burger-btn[aria-expanded='true'] :is(.top-bun, .bottom-bun) {
-  y: 45; 
-} */
 
 .burger-btn[aria-expanded='true'] .top-bun {
   rotate: 45deg; /* Rotate the top line */

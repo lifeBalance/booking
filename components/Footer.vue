@@ -30,9 +30,9 @@ const { companyName } = defineProps(['companyName'])
 
 <style lang="scss" scoped>
 footer {
-  box-shadow: 0 0 5rem rgba(var(--color-text-1), 0.2);
+  // box-shadow: 0 0 5rem rgba(var(--color-text-1), 0.2);
   padding: 2rem 0;
-  background-color: rgb(var(--color-bg));
+  background-color: rgb(var(--color-bg-2));
   color: rgb(var(--color-accent-1));
 }
 
