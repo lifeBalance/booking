@@ -3,10 +3,9 @@ import { ref, onMounted } from 'vue'
 
 // Let's set the main nav stickiness in global state so that 
 // it can be accessed/set by other components (e.g. login)
-const mainNavSticky = useState('stickyNav', () => false)
-// const mainNavSticky = ref(false)
+// const mainNavSticky = useState('stickyNav', () => false)
+const mainNavSticky = ref(false)
 const modalNavExpanded = ref(false)
-const currentScrollTopRef = ref(null)
 
 const toggleModalNav = () => {
   console.log('Header: clicked on burger button')
@@ -40,7 +39,7 @@ function scrollingHandler() {
     // When the user scrolls down
     console.log('downscroll', currentScrollTop, lastScrollTop)
     mainNavSticky.value = false
-  } else if (currentScrollTop < 0 || currentScrollTop < lastScrollTop) {
+  } else {
     // When the user scrolls up
     console.log('upscroll', currentScrollTop, lastScrollTop)
     mainNavSticky.value = true
@@ -51,7 +50,6 @@ function scrollingHandler() {
   // currentScrollTop never goes below 0.
   lastScrollTop = currentScrollTop > 0 ? currentScrollTop : 0
   console.log('scrolling')
-  currentScrollTopRef.value = currentScrollTop
 }
 </script>
 
@@ -80,6 +78,9 @@ header {
   margin: 0 auto;
   padding: 0.8rem 2.5%;
   position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-100%);
