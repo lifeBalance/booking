@@ -24,7 +24,7 @@ const props = defineProps({
   }
 
   & .payment-options {
-    background-color: #23262d;
+    background-color: rgb(var(--color-bg-2));
     overflow: hidden;
     border-radius: var(--radius-default);
   }

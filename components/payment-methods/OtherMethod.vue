@@ -37,6 +37,6 @@ const { brand, details } = props
 }
 
 .other-method.separator {
-  border-bottom: 1px solid rgba(var(--color-text-3));
+  border-bottom: 1px solid rgba(var(--color-text-3), .6);
 }
 </style>

@@ -49,7 +49,7 @@ section {
     /* outline: 1px solid blue; */
 
     & p {
-      color: rgb(var(--color-text-1));
+      color: white;
       font-size: clamp(1.2rem, 4vw, 2rem);
       line-height: 1.5;
       margin-bottom: 1em;

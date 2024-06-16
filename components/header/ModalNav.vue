@@ -6,10 +6,10 @@ const { modalNavExpanded, toggleModalNav } = defineProps([
 ])
 
 const links = [
-  { name: 'Home', path: '/' },
+  { name: 'Login', path: '/login' },
   { name: 'Book a Range', path: '/book' },
   { name: 'Courses', path: '/courses' },
-  { name: 'Login', path: '/login' },
+  { name: 'Home', path: '/' },
 ]
 
 // Define the allowed events this component can emit.
@@ -30,7 +30,7 @@ const links = [
             >
           </li>
 
-          <li>
+          <li @click="toggleModalNav">
             <Switch />
           </li>
         </ul>

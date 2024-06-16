@@ -185,6 +185,7 @@ const handleNext = () => {
   max-width: 80%;
   padding: 4rem 0;
   margin: 0 auto;
+  margin-top: 2rem;
 }
 
 .book-container {
@@ -228,6 +229,7 @@ const handleNext = () => {
       cursor: pointer;
       transition: all 0.3s ease-in-out;
       text-align: center;
+      color: rgb(var(--color-accent-1));
 
       &:hover {
         background-color: rgb(var(--color-accent-1));

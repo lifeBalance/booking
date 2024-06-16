@@ -28,7 +28,7 @@ const closeModal = () => {
   </ClientOnly>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .modal {
   position: fixed;
   top: 0;
@@ -39,10 +39,10 @@ const closeModal = () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(var(--color-bg), 0.9);
   opacity: 0;
   visibility: hidden;
   transition: all 0.5s ease-in-out;
+  background-color: var(--color-bg-modal);
   color: white;
 }
 
