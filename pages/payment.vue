@@ -1,7 +1,4 @@
 <script setup>
-import PaymentConfirmation from '~/components/PaymentMethods/PaymentConfirmation.vue'
-import YourOrder from '~/components/YourOrder.vue'
-
 const router = useRouter()
 
 // Edit/Add card modal
