@@ -4,6 +4,7 @@
   <section class="logos">
     <div class="logos-slide">
       <GlockLogo />
+      <!-- <RugerLogo /> -->
       <BerettaLogo />
       <SigSauerLogo />
       <MPLogo />
@@ -11,6 +12,7 @@
 
     <div class="logos-slide">
       <GlockLogo />
+      <!-- <RugerLogo /> -->
       <BerettaLogo />
       <SigSauerLogo />
       <MPLogo />
@@ -18,6 +20,7 @@
 
     <div class="logos-slide">
       <GlockLogo />
+      <!-- <RugerLogo /> -->
       <BerettaLogo />
       <SigSauerLogo />
       <MPLogo />
@@ -44,9 +47,11 @@
 }
 
 .logos-slide > * {
-  /* border: 1px solid greenyellow; */
+  /* outline: 1px solid red; */
   height: 5rem;
   width: 15rem;
+  /* width: fit-content;
+  width: -webkit-fit-content; */
   fill: rgba(var(--color-text-2));
 }
 
