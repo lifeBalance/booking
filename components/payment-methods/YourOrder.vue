@@ -50,7 +50,7 @@ const basket = ref([
 
 <style lang="scss">
 .order {
-  // margin: 2rem 0;
+  margin: 2rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,6 +60,9 @@ const basket = ref([
     font-size: 1.5rem;
     font-weight: 500;
     padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 
   .order-items {

@@ -172,6 +172,7 @@ const saveCard = (card) => {
 
 <style lang="scss" scoped>
 .payment {
+  width: 90%;
   padding: 6rem 5%;
   display: flex;
   flex-direction: column;
@@ -236,25 +237,26 @@ const saveCard = (card) => {
 
 @media (min-width: 480px) {
   .payment {
-    padding: 6rem 8%;
+    // padding: 6rem 8%;
   }
 }
 
 @media (min-width: 768px) {
   .payment {
-    padding: 6rem 10%;
+    // padding: 6rem 10%;
+    width: 80%;
   }
 }
 
 @media (min-width: 992px) {
   .payment {
-    padding: 6rem 12%;
+    // padding: 6rem 12%;
   }
 }
 
 @media (min-width: 1200px) {
   .payment {
-    padding: 6rem 12%;
+    // padding: 6rem 12%;
   }
 }
 </style>
