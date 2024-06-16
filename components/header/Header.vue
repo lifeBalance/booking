@@ -84,15 +84,6 @@ header {
   width: 100%;
 }
 
-.flex-row-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0 auto;
-  max-width: 95%;
-}
-
 .sticky {
   position: fixed;
   top: 0;
