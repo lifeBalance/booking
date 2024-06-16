@@ -144,8 +144,6 @@ const handleNext = () => {
             auto-apply
             :enable-time-picker="false"
             :dark="isDark"
-            menu-class-name="dp-custom-menu"
-            calendar-class-name="dp-custom-calendar"
             :ui="{
               // Custom class names
               calendarCell: 'dp__calendar_item',
@@ -186,7 +184,7 @@ const handleNext = () => {
 
 <style lang="scss" scoped>
 .booking-container {
-  padding: 6rem 2.5% 4rem;
+  padding: 6rem 0 4rem;
 
   .booking-wrapper {
     display: flex;
