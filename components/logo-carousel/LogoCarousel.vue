@@ -27,6 +27,7 @@
 
 <style>
 .logos {
+  max-width: 100vw;
   margin: 2rem 0;
   white-space: nowrap;
   overflow: hidden;

@@ -126,14 +126,18 @@ const handleNext = () => {
 </script>
 
 <template>
-  <div class="book-wrapper">
+  <div class="booking-container">
     <Stepper activeStep="1" />
-    <div class="book-container">
+
+    <div class="booking-wrapper">
       <section class="img-section"></section>
 
-      <section class="book-section">
-        <h2>Book a Range</h2>
-        <h3>Select Date and Time</h3>
+      <section class="booking-section">
+        <header>
+          <h2>Book a Range</h2>
+          <h3>Select Date and Time</h3>
+        </header>
+
         <div class="picker">
           <VueDatePicker
             v-model="date"
@@ -181,80 +185,80 @@ const handleNext = () => {
 </template>
 
 <style lang="scss" scoped>
-.book-wrapper {
-  max-width: 80%;
-  padding: 4rem 0;
-  margin: 0 auto;
-  margin-top: 2rem;
-}
+.booking-container {
+  padding: 6rem 2.5% 4rem;
 
-.book-container {
-  display: flex;
-  gap: 4rem;
-}
-
-.img-section {
-  display: none;
-}
-
-.book-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  gap: 2rem;
-  min-width: 50%;
-  padding-top: 2rem;
-  color: rgb(var(--color-text-1));
-
-  h2 {
-    color: rgb(var(--color-accent-1));
-    font-size: 2rem;
-  }
-
-  & .time-slots {
+  .booking-wrapper {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    min-width: 100%;
-    margin: 0 auto;
 
-    & .time-slot {
-      width: 100%;
-      padding: 0.8rem 1rem;
-      border: 1px solid rgb(var(--color-accent-1));
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-      text-align: center;
-      color: rgb(var(--color-accent-1));
+    .img-section {
+      display: none;
+    }
 
-      &:hover {
-        background-color: rgb(var(--color-accent-1));
-        color: rgb(var(--color-bg));
+    .booking-section {
+      padding-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin: 0 auto;
+      color: rgb(var(--color-text-1));
+
+      header {
+        text-align: center;
+
+        h2 {
+          color: rgb(var(--color-accent-1));
+          font-size: 2rem;
+          padding-bottom: 1rem;
+        }
       }
-    }
 
-    & .time-slot--booked {
-      border: 1px solid rgb(var(--color-text-3));
-      color: rgb(var(--color-text-3));
-      cursor: not-allowed;
+      & .time-slots {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        min-width: 100%;
+        margin: 0 auto;
 
-      &:hover,
-      &:active {
-        background-color: transparent;
-        color: rgb(var(--color-text-3));
+        & .time-slot {
+          width: 100%;
+          padding: 0.8rem 1rem;
+          border: 1px solid rgb(var(--color-accent-1));
+          border-radius: 0.5rem;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+          text-align: center;
+          color: rgb(var(--color-accent-1));
+
+          &:hover {
+            background-color: rgb(var(--color-accent-1));
+            color: rgb(var(--color-bg));
+          }
+        }
+
+        & .time-slot--booked {
+          border: 1px solid rgb(var(--color-text-3));
+          color: rgb(var(--color-text-3));
+          cursor: not-allowed;
+
+          &:hover,
+          &:active {
+            background-color: transparent;
+            color: rgb(var(--color-text-3));
+          }
+        }
+
+        & .time-slot--booking {
+          border: 1px solid rgb(var(--color-accent-1));
+          color: rgb(var(--color-bg));
+          background-color: rgb(var(--color-accent-1));
+          cursor: not-allowed;
+        }
       }
-    }
-
-    & .time-slot--booking {
-      border: 1px solid rgb(var(--color-accent-1));
-      color: rgb(var(--color-bg));
-      background-color: rgb(var(--color-accent-1));
-      cursor: not-allowed;
-    }
+    } // .booking-section
   }
 }
 
@@ -266,15 +270,22 @@ const handleNext = () => {
 }
 
 @media (min-width: 768px) {
-  .img-section {
-    display: block;
-    border-radius: 0.5rem;
-    flex-grow: 1;
-    align-self: stretch;
-    margin-top: 2rem;
-    background-image: url('~/assets/images/armory.jpg');
-    background-size: cover;
-    background-position: center;
+  .booking-container {
+    width: 80%;
+
+    .booking-wrapper {
+
+      .img-section {
+        display: block;
+        border-radius: 0.5rem;
+        width: 50%;
+        align-self: stretch;
+        margin-top: 2rem;
+        background-image: url('~/assets/images/armory.jpg');
+        background-size: cover;
+        background-position: center;
+      }
+    }
   }
 }
 

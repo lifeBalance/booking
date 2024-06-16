@@ -64,18 +64,19 @@ body {
 }
 
 .container {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  min-height: 100vh;
+  justify-content: center;
   background-color: rgb(var(--color-bg));
   font-family: 'Inter', sans-serif;
 }
 
 main {
   flex: 1;
-  /* display: flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center; */
+  justify-content: center;
 }
 </style>
