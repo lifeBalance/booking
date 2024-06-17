@@ -4,23 +4,34 @@ const { switchAccessType } = defineProps(['switchAccessType'])
 const handleSwitchAccessType = (accessType) => {
   switchAccessType(accessType)
 }
+
+const emailInputValue = ref('')
+const passwordInputValue = ref('')
 </script>
 
 <template>
   <section class="login">
     <h2>login into your account</h2>
 
-    <div class="email">
-      <label for="email">Email</label>
-      <input type="email" id="email" />
-    </div>
+    <Input
+      label="Email"
+      inputType="email"
+      inputName="email"
+      :inputValue="emailInputValue"
+    />
 
     <div class="password">
-      <label for="password">Password</label>
-      <input type="password" id="password" />
+      <Input
+        label="Password"
+        inputType="password"
+        inputName="password"
+        :inputValue="passwordInputValue"
+      />
 
       <p class="forgot-password">
-        <span class="forgot-password" @click="handleSwitchAccessType('reset')">Forgot your password?</span>
+        <span class="forgot-password" @click="handleSwitchAccessType('reset')"
+          >Forgot your password?</span
+        >
       </p>
     </div>
 
@@ -28,7 +39,9 @@ const handleSwitchAccessType = (accessType) => {
 
     <div class="no-account">
       <p>Don't have an account yet?</p>
-      <p class="sign-up" @click="handleSwitchAccessType('signUp')">Sign up Here!</p>
+      <p class="sign-up" @click="handleSwitchAccessType('signUp')">
+        Sign up Here!
+      </p>
     </div>
   </section>
 </template>
@@ -82,25 +95,6 @@ const handleSwitchAccessType = (accessType) => {
         border-bottom: 2px solid rgb(var(--color-accent-1));
       }
     }
-  }
-
-  & label {
-    color: rgb(var(--color-text-1));
-    display: block;
-    font-weight: 500;
-    margin-bottom: 0.8rem;
-  }
-
-  & input {
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    font-family: inherit;
-    color: rgb(var(--color-text-2));
-    border: 1px solid rgba(var(--color-text-1), 0.2);
-    background-color: rgba(var(--color-bg), 0.9);
-    border-radius: var(--radius-default);
-    box-shadow: 0 1px 2px rgba(var(--color-bg), 0.1);
-    width: 100%;
   }
 
   button {
