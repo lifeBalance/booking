@@ -5,11 +5,11 @@ import cockingSoundFile from '~/assets/sounds/gunreloading.m4a'
 import shotSoundFile from '~/assets/sounds/gunshot.mp3'
 
 const router = useRouter()
-const { isDark } = useTheme()
-console.log('isDark (useTheme)', isDark.value)
+// const { isDark } = useTheme()
+// console.log('isDark (useTheme)', isDark.value)
 
-// We can ALSO pull global state from the store, using the "key" name (e.g. 'isDarkG')
-// const isDark = useState('isDarkG')
+// We can also pull global state from the store, using the "key" name (e.g. 'isDarkG')
+const isDark = useState('isDarkG')
 console.log('isDark (useState)', isDark.value)
 
 definePageMeta({

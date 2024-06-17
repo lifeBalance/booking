@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['nuxt-icon'],
   experimental: {
-    payloadExtraction: true
+    payloadExtraction: false,
   },
   components: [
     {
@@ -34,12 +34,14 @@ export default defineNuxtConfig({
   },
   ssr: true,
   nitro: {
-    prerender: {
-      routes: ['/', '/book'],
-    },
-    // routeRules: {
-    //   '/': { prerender: true },
-    //   '/book': { prerender: true },
+    // prerender: {
+    //   routes: ['/'],
     // },
+  },
+  routeRules: {
+    '/': { prerender: true },
+    '/book': { ssr: false },
+    '/armory': { ssr: false },
+    '/payment': { ssr: false },
   },
 })

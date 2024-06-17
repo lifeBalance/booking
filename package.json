@@ -6,6 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "generate2": "nuxi generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "deploy": "gh-pages -d .output/public"
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",
+    "nuxi": "^3.12.0",
     "nuxt-icon": "^0.6.10",
     "sass": "^1.77.4"
   }
