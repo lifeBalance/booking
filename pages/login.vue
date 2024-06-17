@@ -1,22 +1,24 @@
 <script setup>
 onMounted(() => {
-
   const mainNavSticky = useState('stickyNav')
   mainNavSticky.value = true
 
   console.log('login page mounted - header sticky?', mainNavSticky.value)
 })
+
+const accessType = ref('login')
+
+const switchAccessType = (type) => {
+  console.log('switching access type to', type)
+  accessType.value = type
+}
 </script>
 
 <template>
   <section>
-    <div class="content">
-      <h1>login</h1>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo iusto
-        debitis delectus quam minus unde a ipsum, excepturi ab? Asperiores?
-      </p>
-    </div>
+    <Login v-if="accessType === 'login'" :switchAccessType="switchAccessType" />
+    <SignUp v-else-if="accessType === 'signUp'" :switchAccessType="switchAccessType" />
+    <Reset v-else-if="accessType === 'reset'" :switchAccessType="switchAccessType" />
   </section>
 </template>
 

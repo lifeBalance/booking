@@ -3,8 +3,7 @@ import { ref, onMounted } from 'vue'
 
 // Let's set the main nav stickiness in global state so that 
 // it can be accessed/set by other components (e.g. login)
-// const mainNavSticky = useState('stickyNav', () => false)
-const mainNavSticky = ref(false)
+const mainNavSticky = useState('stickyNav', () => false)
 const modalNavExpanded = ref(false)
 
 const toggleModalNav = () => {
