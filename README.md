@@ -27,6 +27,18 @@ export default defineNuxtConfig({
 }
 ```
 
+## DEV ISSUES
+
+### NUXI_DISABLE_VITE_HMR
+
+At some point, I started experiencing issues with the **HMR** (Hot Module Replacement) in NUXT, to the point that developing was impossible. I think that it was caused after installing [Nuxi](https://nuxt.com/docs/api/commands/dev) (which by the way, was done when **static site generation** was failing me, but it turned out that was for a bug in my code).
+
+Apparently, that's a non-documented [issue](https://github.com/nuxt/nuxt/issues/25335), which I solved adding the following `script` to my `package.json`:
+
+```json
+"dev2": "export NUXI_DISABLE_VITE_HMR=1 && nuxi dev",
+```
+
 ## TODO
 
 Try to make it happen with a GitHub workflow.
