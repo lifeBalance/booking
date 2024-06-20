@@ -1,4 +1,6 @@
 <script setup>
+const router = useRouter()
+
 const { switchAccessType } = defineProps(['switchAccessType'])
 
 const handleSwitchAccessType = (accessType) => {
@@ -7,6 +9,16 @@ const handleSwitchAccessType = (accessType) => {
 
 const emailInputValue = ref('')
 const passwordInputValue = ref('')
+
+const { login } = useLogin()
+
+function loginHandler(credentials) {
+  const isLoggedIn = login(credentials)
+  if (isLoggedIn) {
+    router.push('/')
+    console.log('isLoggedIn', isLoggedIn)
+  }
+}
 </script>
 
 <template>
@@ -18,6 +30,7 @@ const passwordInputValue = ref('')
       inputType="email"
       inputName="email"
       :inputValue="emailInputValue"
+      :setInputValue="(e) => (emailInputValue = e.target.value)"
     />
 
     <div class="password">
@@ -26,6 +39,7 @@ const passwordInputValue = ref('')
         inputType="password"
         inputName="password"
         :inputValue="passwordInputValue"
+        :setInputValue="(e) => (passwordInputValue = e.target.value)"
       />
 
       <p class="forgot-password">
@@ -35,7 +49,16 @@ const passwordInputValue = ref('')
       </p>
     </div>
 
-    <button>Log in</button>
+    <button
+      @click="
+        loginHandler({
+          email: emailInputValue,
+          password: passwordInputValue,
+        })
+      "
+    >
+      Log in
+    </button>
 
     <div class="no-account">
       <p>Don't have an account yet?</p>

@@ -16,6 +16,7 @@ const { label, inputName, inputType, inputValue, setInputValue } = defineProps([
       :name="inputName"
       :id="inputName"
       :value="inputValue"
+      @input="setInputValue"
     />
   </section>
 </template>
