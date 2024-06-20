@@ -157,10 +157,7 @@ const saveCard = (card) => {
     </Modal>
 
     <Modal :modalOpen="loading || paymentConfirmation">
-      <section class="loading" v-if="loading">
-        <Icon name="svg-spinners:gooey-balls-1" class="loading-icon" />
-        <p>We're processing your payment...</p>
-      </section>
+      <LoadingModal v-if="loading" msg="We're processing your payment..." />
 
       <PaymentConfirmation
         v-else-if="paymentConfirmation"
@@ -257,24 +254,6 @@ const saveCard = (card) => {
 @media (min-width: 1200px) {
   .payment {
     // padding: 6rem 12%;
-  }
-}
-</style>
-
-<style>
-.loading {
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  color: rgb(var(--color-text-2));
-  transition: all 0.3s ease;
-
-  .loading-icon {
-    font-size: 3rem;
-    color: rgb(var(--color-accent-1));
   }
 }
 </style>
