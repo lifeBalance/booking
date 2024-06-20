@@ -1,8 +1,51 @@
 <script setup>
+const router = useRouter()
+
 const { switchAccessType } = defineProps(['switchAccessType'])
 
 const handleSwitchAccessType = (accessType) => {
   switchAccessType(accessType)
+}
+
+const fullNameInputValue = ref('')
+const emailInputValue = ref('')
+const passwordInputValue = ref('')
+
+// Modals
+const loading = ref(false)
+const confirmationEmailModal = ref(false)
+
+function signUp(credentials) {
+  // set loading state to mimic backend payment processing
+  loading.value = true
+
+  // When modal is up, avoid scrolling
+  document.body.style.overflow = 'hidden'
+
+  setTimeout(() => {
+    // Oh, we're done!
+    loading.value = false
+
+    // Save user credentials to local storage (for demo purposes)
+    localStorage.setItem(
+      'booking-demo-user-accounts',
+      JSON.stringify(credentials)
+    )
+
+    // Open confirmation email modal
+    confirmationEmailModal.value = true
+  }, 2500)
+}
+
+const closeModalHandler = () => {
+  console.log('signup: close modal')
+  confirmationEmailModal.value = false
+
+  // Allow scrolling
+  document.body.style.overflow = 'auto'
+
+  // Redirect to home page
+  router.push('/')
 }
 </script>
 
@@ -12,28 +55,44 @@ const handleSwitchAccessType = (accessType) => {
 
     <div class="full-name">
       <label for="full-name">Full Name</label>
-      <input type="text" id="full-name" />
+      <input type="text" id="full-name" v-model="fullNameInputValue" />
     </div>
 
     <div class="email">
       <label for="email">Email</label>
-      <input type="email" id="email" />
+      <input type="email" id="email" v-model="emailInputValue" />
     </div>
 
     <div class="password">
       <label for="password">Password</label>
-      <input type="password" id="password" />
+      <input type="password" id="password" v-model="passwordInputValue" />
       <p class="forgot-password">
-        <span class="forgot-password" @click="handleSwitchAccessType('reset')">Forgot your password?</span>
+        <span class="forgot-password" @click="handleSwitchAccessType('reset')"
+          >Forgot your password?</span
+        >
       </p>
     </div>
 
-    <button>Submit</button>
+    <button @click="signUp({
+      fullName: fullNameInputValue,
+      email: emailInputValue,
+      password: passwordInputValue
+    })">Submit</button>
 
     <div class="have-account">
       <p>Already have an account?</p>
       <p class="login" @click="handleSwitchAccessType('login')">Log In Here!</p>
     </div>
+
+    <Modal :modalOpen="loading || confirmationEmailModal">
+      <LoadingModal v-if="loading" msg="We're creating your account..." />
+
+      <ConfirmationEmailModal
+        v-else-if="confirmationEmailModal"
+        :closeModalHandler="closeModalHandler"
+        title="Congratulations! 🎉"
+      />
+    </Modal>
   </section>
 </template>
 
