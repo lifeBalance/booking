@@ -3,8 +3,21 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import cockingSoundFile from '~/assets/sounds/gunreloading.m4a'
 import shotSoundFile from '~/assets/sounds/gunshot.mp3'
+import { useUserStore } from '~/stores'
+
+// Call the user store to get the goodies
+const userStore = useUserStore()
 
 const router = useRouter()
+
+// Get the user's login status as computed property (see comments in ModalNav.vue)
+const isLoggedIn = computed(() => userStore.isLoggedIn())
+console.log('book page - isLoggedIn', isLoggedIn.value)
+
+if (!isLoggedIn.value) {
+  router.push('/login')
+}
+
 // const { isDark } = useTheme()
 // console.log('isDark (useTheme)', isDark.value)
 
@@ -272,7 +285,6 @@ const handleNext = () => {
     width: 80%;
 
     .booking-wrapper {
-
       .img-section {
         display: block;
         border-radius: 0.5rem;

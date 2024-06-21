@@ -1,5 +1,8 @@
 <script setup>
+import { useUserStore } from '~/stores'
+
 const router = useRouter()
+const userStore = useUserStore()
 
 const { switchAccessType } = defineProps(['switchAccessType'])
 
@@ -15,7 +18,7 @@ const passwordInputValue = ref('')
 const loading = ref(false)
 const confirmationEmailModal = ref(false)
 
-function signUp(credentials) {
+function signUp() {
   // set loading state to mimic backend payment processing
   loading.value = true
 
@@ -26,11 +29,12 @@ function signUp(credentials) {
     // Oh, we're done!
     loading.value = false
 
-    // Save user credentials to local storage (for demo purposes)
-    localStorage.setItem(
-      'booking-demo-user-accounts',
-      JSON.stringify(credentials)
-    )
+    userStore.setUser({
+      name: fullNameInputValue,
+      email: emailInputValue,
+      password: passwordInputValue,
+      isLoggedIn: false,
+    })
 
     // Open confirmation email modal
     confirmationEmailModal.value = true
@@ -73,11 +77,7 @@ const closeModalHandler = () => {
       </p>
     </div>
 
-    <button @click="signUp({
-      fullName: fullNameInputValue,
-      email: emailInputValue,
-      password: passwordInputValue
-    })">Submit</button>
+    <button @click="signUp">Submit</button>
 
     <div class="have-account">
       <p>Already have an account?</p>

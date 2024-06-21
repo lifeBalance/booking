@@ -1,4 +1,6 @@
 <script setup>
+import { useUserStore } from '~/stores'
+
 const router = useRouter()
 
 const { switchAccessType } = defineProps(['switchAccessType'])
@@ -10,13 +12,21 @@ const handleSwitchAccessType = (accessType) => {
 const emailInputValue = ref('')
 const passwordInputValue = ref('')
 
-const { login } = useLogin()
+// Get the user store
+const userStore = useUserStore()
+console.log('userStore', userStore) // testing
 
 function loginHandler(credentials) {
-  const isLoggedIn = login(credentials)
+  // Log in the user with the provided credentials (email and password)
+  const isLoggedIn = userStore.login(
+    emailInputValue.value,
+    passwordInputValue.value
+  )
+
+  console.log('isLoggedIn', isLoggedIn) // testing
+
   if (isLoggedIn) {
     router.push('/')
-    console.log('isLoggedIn', isLoggedIn)
   }
 }
 </script>

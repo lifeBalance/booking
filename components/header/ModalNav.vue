@@ -1,12 +1,41 @@
 <script setup>
+import { useUserStore } from '~/stores'
+
+// Get the user store
+const userStore = useUserStore()
+
+const router = useRouter()
+
+/**
+ * When we directly call userStore.isLoggedIn() during setup, we're getting
+ * the value of isLoggedIn at the time of component initialization. This means 
+ * if the isLoggedIn state changes in the store after the component has been 
+ * initialized, those changes won't be reflected in our component because 
+ * isLoggedIn in your component is not reactive. 
+ *
+ * To fix this, we should access isLoggedIn as a computed property to ensure
+ * it remains reactive and updates whenever the store's state changes.
+ */
+const isLoggedIn = computed(() => userStore.isLoggedIn())
+
 // Define the allowed props this component can receive.
 const { modalNavExpanded, toggleModalNav } = defineProps([
   'modalNavExpanded',
   'toggleModalNav',
 ])
 
+const logOutHandler = () => {
+  console.log('logOutHandler')
+  userStore.logout()
+
+  router.push('/')
+
+  setTimeout(() => {
+    toggleModalNav()
+  }, 500)
+}
+
 const links = [
-  { name: 'Login', path: '/login' },
   { name: 'Book a Range', path: '/book' },
   { name: 'Courses', path: '/courses' },
   { name: 'Home', path: '/' },
@@ -21,6 +50,16 @@ const links = [
     <Teleport to="body">
       <section class="modal" :class="{ expanded: modalNavExpanded }">
         <ul>
+          <li v-if="isLoggedIn">
+            <span class="logout" @click="logOutHandler">Log Out</span>
+          </li>
+
+          <li v-else>
+            <NuxtLink class="nav-link" to="/login" @click="toggleModalNav"
+              >Login</NuxtLink
+            >
+          </li>
+
           <li v-for="link in links">
             <NuxtLink
               class="nav-link"
@@ -79,6 +118,16 @@ const links = [
 
     & a:hover {
       color: rgb(var(--color-accent-1));
+    }
+
+    .logout {
+      cursor: pointer;
+      color: rgb(var(--color-text-1));
+      transition: all 0.3s ease;
+    }
+
+    .logout:hover {
+      color: rgb(var(--color-accent-2));
     }
   }
 

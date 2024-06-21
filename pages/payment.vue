@@ -1,5 +1,17 @@
 <script setup>
+import { useUserStore } from '~/stores'
+
+// Call the user store to get the goodies
+const userStore = useUserStore()
 const router = useRouter()
+
+// Get the user's login status as computed property (see comments in ModalNav.vue)
+const isLoggedIn = computed(() => userStore.isLoggedIn())
+console.log('armory page - isLoggedIn', isLoggedIn.value)
+
+if (!isLoggedIn.value) {
+  router.push('/login')
+}
 
 // Edit/Add card modal
 const modalName = ref('')

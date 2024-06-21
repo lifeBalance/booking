@@ -1,6 +1,19 @@
 <script setup>
-const router = useRouter()
 import cockingSoundFile from '~/assets/sounds/gunreloading.m4a'
+import { useUserStore } from '~/stores'
+
+// Call the user store to get the goodies
+const userStore = useUserStore()
+
+const router = useRouter()
+
+// Get the user's login status as computed property (see comments in ModalNav.vue)
+const isLoggedIn = computed(() => userStore.isLoggedIn())
+console.log('armory page - isLoggedIn', isLoggedIn.value)
+
+if (!isLoggedIn.value) {
+  router.push('/login')
+}
 
 function handleBookGun() {
   const cockingSound = new Audio(cockingSoundFile)
