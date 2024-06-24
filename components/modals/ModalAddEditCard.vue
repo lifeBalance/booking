@@ -4,50 +4,43 @@ const dayjs = useDayjs()
 
 export default {
   name: 'ModalAddEditCard',
-  // props: ['title', 'modalOpen', 'card', 'handlers'],
-  // setup(props) {
-  //   // setup() receives props as the first argument.
-  //   console.log('PROPS: ', props)
-  // },
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    modalOpen: {
-      type: Boolean,
-      required: true,
-    },
-    card: {
-      type: Object,
-      validator: (card) => {
-        if (Object.keys(card).length === 0) return true
+  props: ['title', 'modalOpen', 'card', 'handlers'],
+  // This also works, but it's verbose AF
+  // props: {
+  //   title: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   card: {
+  //     type: Object,
+  //     validator: (card) => {
+  //       if (Object.keys(card).length === 0) return true
 
-        return (
-          'cardId' in card &&
-          typeof card.cardId === 'string' &&
-          'cardBrand' in card &&
-          typeof card.cardBrand === 'string' &&
-          'cardName' in card &&
-          typeof card.cardName === 'string' &&
-          'cardNumber' in card &&
-          typeof card.cardNumber === 'string' &&
-          'cardExpiry' in card &&
-          typeof card.cardExpiry === 'string' &&
-          'cardCvc' in card &&
-          typeof card.cardCvc === 'string'
-        )
-      },
-      required: true,
-    },
-    handlers: {
-      type: Object,
-      default: () => ({
-        cancelHandler: () => {},
-        saveCard: () => {},
-      }),
-    },
-  },
+  //       return (
+  //         'cardId' in card &&
+  //         typeof card.cardId === 'string' &&
+  //         'cardBrand' in card &&
+  //         typeof card.cardBrand === 'string' &&
+  //         'cardName' in card &&
+  //         typeof card.cardName === 'string' &&
+  //         'cardNumber' in card &&
+  //         typeof card.cardNumber === 'string' &&
+  //         'cardExpiry' in card &&
+  //         typeof card.cardExpiry === 'string' &&
+  //         'cardCvc' in card &&
+  //         typeof card.cardCvc === 'string'
+  //       )
+  //     },
+  //     required: true,
+  //   },
+  //   handlers: {
+  //     type: Object,
+  //     default: () => ({
+  //       cancelHandler: () => {},
+  //       saveCard: () => {},
+  //     }),
+  //   },
+  // },
   setup(props) {
     // setup() receives props as the first argument.
     onActivated(() => {
@@ -272,13 +265,13 @@ export default {
 </script>
 
 <template>
-  <ClientOnly>
+  <!-- <ClientOnly>
     <Teleport to="body">
       <section
         class="modal"
         :class="{ open: modalOpen }"
         :modalOpen="modalOpen"
-      >
+      > -->
         <section class="modal-card">
           <header>
             <h4>{{ title }}</h4>
@@ -360,9 +353,9 @@ export default {
             <button class="btn" @click="handleSaveCard">Save</button>
           </div>
         </section>
-      </section>
+      <!-- </section>
     </Teleport>
-  </ClientOnly>
+  </ClientOnly> -->
 </template>
 
 <style lang="scss" scoped>

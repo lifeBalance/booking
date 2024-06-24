@@ -112,9 +112,20 @@ const saveCard = (card, cardId) => {
   ) {
     console.log('invalid card: can NOT save!')
   } else if (!cardId) {
+    const cardId = cardNumberNoSpaces(card.cardNumber)
     // If the user is ADDING a card, check if the card already exists
     if (cardIds.includes(cardId)) {
       console.log('card already exists:', cardId)
+      for (let existingCard of state.cards) {
+        // Traverse the array, and replace the card with the new details
+        if (existingCard.cardId === cardId) {
+          console.log('replacing card:', cardId)
+          newCards.push(card)
+        } else {
+          console.log('adding card:', cardId)
+          newCards.push(existingCard)
+        }
+      }
     } else {
       state.cards = [...state.cards, card]
     }
@@ -187,19 +198,18 @@ const saveCard = (card, cardId) => {
       </PaymentMethod>
     </div>
 
-    <!-- <Modal :modalOpen="state.cardModal" @closeModal="handleCloseCardModal"> -->
-    <ModalAddEditCard
-      :modalOpen="state.cardModal"
-      @closeModal="handleCloseCardModal"
-      :title="
-        state.editedCard?.cardId
-          ? 'Edit Credit / Debit Card'
-          : 'Add New Credit / Debit Card'
-      "
-      :card="state.editedCard"
-      :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
-    />
-    <!-- </Modal> -->
+    <Modal :modalOpen="state.cardModal" @closeModal="handleCloseCardModal">
+      <ModalAddEditCard
+        @closeModal="handleCloseCardModal"
+        :title="
+          state.editedCard?.cardId
+            ? 'Edit Credit / Debit Card'
+            : 'Add New Credit / Debit Card'
+        "
+        :card="state.editedCard"
+        :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
+      />
+    </Modal>
 
     <Modal :modalOpen="state.loading || state.paymentConfirmation">
       <LoadingModal
