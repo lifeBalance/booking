@@ -1,4 +1,5 @@
-<script setup>
+<script setup lang="ts">
+import { z } from 'zod'
 import { useUserStore } from '~/stores'
 
 const router = useRouter()
@@ -6,19 +7,108 @@ const userStore = useUserStore()
 
 const { switchAccessType } = defineProps(['switchAccessType'])
 
+// Let's define a reactive reference for our form data.
+const form = ref({
+  fullName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+})
+
+const formSchema = z.object({
+  fullName: z
+    .string()
+    .min(3, { message: 'Must be at least 3 characters long' }),
+  email: z.string().email({ message: 'Invalid email address' }),
+  password: z
+    .string()
+    .min(6, { message: 'Must be at least 6 characters long' })
+    .regex(/[A-Z]/, {
+      message: 'Must contain at least one uppercase letter',
+    })
+    .regex(/[0-9]/, { message: 'Must contain at least one number' })
+    .regex(/[\W_]/, {
+      message: 'Must contain at least one special character',
+    }),
+  confirmPassword: z
+    .string()
+    .min(6, { message: 'Confirm Password can not be empty' }),
+})
+
+// In order to get the validateField function to work, we need to create a
+// second PARTIAL schema based on the first one, and add refine there.
+const refinedFormSchema = formSchema.partial().refine(
+  (data) => {
+    // IMPORTANT: my goal is to FAIL validation when the password and
+    // confirmPassword fields are not equal, so I have to return true
+    // when they are equal, to cause validation fail (bit counterintuitive).
+    return data.password === data.confirmPassword
+  },
+  {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  }
+)
+
+// Let's infer the type of our form from the schema.
+type TFormSchema = z.infer<typeof formSchema>
+
+// Let's define a reactive reference to our form errors,
+// based on the type of the form schema.
+// const formError = ref<z.ZodFormattedError<TFormSchema | null>>(null)
+const formError = ref<z.ZodFormattedError<TFormSchema>>({})
+
 const handleSwitchAccessType = (accessType) => {
   switchAccessType(accessType)
 }
 
-const fullNameInputValue = ref('')
-const emailInputValue = ref('')
-const passwordInputValue = ref('')
+const validateField = (fieldName: string, value) => {
+  // Backup the current form errors. That's necessary because once the
+  // partial schema is parsed, the formError will be updated with only the
+  // errors for the specific field, smashing the other ones.
+  const errorsBackup = formError.value
+
+  // Validate the "blurred" field value.
+  const result = refinedFormSchema.safeParse({ [fieldName]: value })
+
+  if (!result.success) {
+    console.log('lala', result.error.format())
+
+    // If validation fails, safely update formError with the errors for this field
+    const errors = result.error.format()[fieldName]?._errors || []
+
+    console.log('errors', errors)
+
+    // Update only the errors for the specific field, preserving other field errors
+    formError.value = {
+      ...errorsBackup,
+      [fieldName]: { _errors: errors },
+    }
+  } else {
+    // If validation succeeds, clear any errors ONLY for this field.
+    formError.value[fieldName] = { _errors: [] }
+  }
+}
 
 // Modals
 const loading = ref(false)
 const confirmationEmailModal = ref(false)
 
 function signUp() {
+  // Validate all the form fields.
+  const result = refinedFormSchema.safeParse(form.value)
+
+  if (!result.success) {
+    console.log('lala', result.error.format())
+
+    const errors = result.error.format() || []
+    console.log('errors', errors)
+
+    formError.value = errors
+    // Early return
+    return
+  }
+
   // set loading state to mimic backend payment processing
   loading.value = true
 
@@ -30,9 +120,9 @@ function signUp() {
     loading.value = false
 
     userStore.setUser({
-      name: fullNameInputValue,
-      email: emailInputValue,
-      password: passwordInputValue,
+      name: form.fullName,
+      email: form.email,
+      password: form.password,
       isLoggedIn: false,
     })
 
@@ -57,31 +147,85 @@ const closeModalHandler = () => {
   <section class="sign-up">
     <h2>create a new account</h2>
 
-    <div class="full-name">
-      <label for="full-name">Full Name</label>
-      <input type="text" id="full-name" v-model="fullNameInputValue" />
-    </div>
+    <form @submit.prevent="onSubmit">
+      <div class="field full-name">
+        <label for="full-name">Full Name</label>
+        <input
+          name="full-name"
+          type="text"
+          v-model="form.fullName"
+          @blur="() => validateField('fullName', form.fullName)"
+        />
 
-    <div class="email">
-      <label for="email">Email</label>
-      <input type="email" id="email" v-model="emailInputValue" />
-    </div>
+        <div class="errors">
+          <p class="error" v-for="error in formError?.fullName?._errors">
+            {{ error }}
+          </p>
+        </div>
+      </div>
 
-    <div class="password">
-      <label for="password">Password</label>
-      <input type="password" id="password" v-model="passwordInputValue" />
-      <p class="forgot-password">
-        <span class="forgot-password" @click="handleSwitchAccessType('reset')"
-          >Forgot your password?</span
-        >
+      <div class="field email">
+        <label for="email">Email</label>
+        <input
+          name="email"
+          type="email"
+          v-model="form.email"
+          @blur="() => validateField('email', form.email)"
+        />
+
+        <div class="errors">
+          <p class="error" v-for="error in formError?.email?._errors">
+            {{ error }}
+          </p>
+        </div>
+      </div>
+
+      <div class="field password">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          v-model="form.password"
+          @blur="() => validateField('password', form.password)"
+        />
+
+        <div class="errors">
+          <p class="error" v-for="error in formError?.password?._errors">
+            {{ error }}
+          </p>
+        </div>
+      </div>
+
+      <div class="field confirm-password">
+        <label for="confirm-password">Confirm Password</label>
+        <input
+          type="password"
+          name="confirm-password"
+          v-model="form.confirmPassword"
+          @blur="() => validateField('confirmPassword', form.confirmPassword)"
+        />
+
+        <div class="errors">
+          <p class="error" v-for="error in formError?.confirmPassword?._errors">
+            {{ error }}
+          </p>
+        </div>
+      </div>
+
+      <button @click="signUp">Submit</button>
+    </form>
+
+    <div class="other-options">
+      <p class="forgot-password" @click="handleSwitchAccessType('reset')">
+        <span>Forgot your password?</span>
       </p>
-    </div>
 
-    <button @click="signUp">Submit</button>
-
-    <div class="have-account">
-      <p>Already have an account?</p>
-      <p class="login" @click="handleSwitchAccessType('login')">Log In Here!</p>
+      <div class="have-account">
+        <p>Already have an account?</p>
+        <p class="login" @click="handleSwitchAccessType('login')">
+          Log In Here!
+        </p>
+      </div>
     </div>
 
     <Modal :modalOpen="loading || confirmationEmailModal">
@@ -111,59 +255,113 @@ const closeModalHandler = () => {
     text-transform: uppercase;
   }
 
-  .forgot-password {
-    text-align: right;
-    padding-top: 0.7rem;
-
-    span {
-      color: rgb(var(--color-accent-1));
-      text-align: right;
-      padding-top: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-      border-bottom: 2px solid transparent;
-
-      &:hover {
-        border-bottom: 2px solid rgb(var(--color-accent-1));
-      }
-    }
-  }
-
-  .have-account {
+  form {
     display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    color: rgb(var(--color-text-1));
+    flex-direction: column;
+    gap: 2rem;
+  }
 
-    p:last-child {
-      cursor: pointer;
-      color: rgb(var(--color-accent-1));
-      transition: all 0.3s ease-in-out;
-      border-bottom: 2px solid transparent;
+  .field {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
 
-      &:hover {
-        border-bottom: 2px solid rgb(var(--color-accent-1));
+    label {
+      color: rgb(var(--color-text-1));
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+      margin-left: 0.8rem;
+    }
+
+    input {
+      padding: 0.5rem;
+      font-size: 1.2rem;
+      font-family: inherit;
+      color: rgb(var(--color-text-2));
+      border: 1px solid rgba(var(--color-text-1), 0.2);
+      background-color: rgba(var(--color-bg), 0.9);
+      border-radius: var(--radius-default);
+      box-shadow: 0 1px 2px rgba(var(--color-bg), 0.1);
+      width: 100%;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-accent-1), 0.9);
       }
     }
   }
 
-  & label {
-    color: rgb(var(--color-text-1));
-    display: block;
-    font-weight: 500;
-    margin-bottom: 0.8rem;
+  .errors {
+    margin-top: 0.4rem;
+    margin-left: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    p {
+      color: red;
+      font-size: 0.8rem;
+    }
   }
 
-  & input {
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    font-family: inherit;
-    color: rgb(var(--color-text-2));
-    border: 1px solid rgba(var(--color-text-1), 0.2);
-    background-color: rgba(var(--color-bg), 0.9);
-    border-radius: var(--radius-default);
-    box-shadow: 0 1px 2px rgba(var(--color-bg), 0.1);
-    width: 100%;
+  .full-name,
+  .email {
+    height: 6rem;
+    // border: 1px solid yellow;
+  }
+
+  .password {
+    height: 10rem;
+    // border: 1px solid green;
+  }
+
+  .confirm-password {
+    height: 8rem;
+    // border: 1px solid yellow;
+  }
+
+  .other-options {
+    .forgot-password {
+      span {
+        cursor: pointer;
+        color: rgb(var(--color-accent-1));
+        transition: all 0.3s ease-in-out;
+        padding-bottom: 0.2rem;
+        border-bottom: 2px solid transparent;
+
+        &:hover {
+          border-bottom: 2px solid rgb(var(--color-accent-1));
+        }
+      }
+    }
+
+    .have-account {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 1rem;
+
+      p:first-child {
+        color: rgb(var(--color-text-1));
+        border-bottom: 2px solid transparent;
+        padding-bottom: 0.2rem;
+      }
+
+      p:last-child {
+        color: rgb(var(--color-accent-1));
+        padding-bottom: 0.2rem;
+
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        border-bottom: 2px solid transparent;
+
+        &:hover {
+          border-bottom: 2px solid rgb(var(--color-accent-1));
+        }
+      }
+    }
   }
 
   button {
@@ -176,7 +374,7 @@ const closeModalHandler = () => {
     text-align: center;
     display: inline-block;
     text-decoration: none;
-    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-size: clamp(1.2rem, 2vw, 2rem);
     font-weight: 500;
     transition: all 0.3s ease-in-out;
 
