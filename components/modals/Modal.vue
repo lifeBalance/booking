@@ -6,7 +6,7 @@ const emit = defineEmits(['closeModal'])
 
 // Define the allowed props this component can receive.
 const { modalOpen } = defineProps(['modalOpen'])
-
+console.log('modalOpen', modalOpen)
 // When the overlay is clicked, emit the 'closeModel'
 // event, so the parent can close the modal.
 const closeModal = () => {

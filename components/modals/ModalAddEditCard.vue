@@ -1,326 +1,393 @@
-<script setup>
-const props = defineProps({
-  title: {
-    type: String,
-    default: '',
+<script>
+import { IMaskDirective } from 'vue-imask'
+const dayjs = useDayjs()
+
+export default {
+  name: 'ModalAddEditCard',
+  // props: ['title', 'modalOpen', 'card', 'handlers'],
+  // setup(props) {
+  //   // setup() receives props as the first argument.
+  //   console.log('PROPS: ', props)
+  // },
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    modalOpen: {
+      type: Boolean,
+      required: true,
+    },
+    card: {
+      type: Object,
+      validator: (card) => {
+        if (Object.keys(card).length === 0) return true
+
+        return (
+          'cardId' in card &&
+          typeof card.cardId === 'string' &&
+          'cardBrand' in card &&
+          typeof card.cardBrand === 'string' &&
+          'cardName' in card &&
+          typeof card.cardName === 'string' &&
+          'cardNumber' in card &&
+          typeof card.cardNumber === 'string' &&
+          'cardExpiry' in card &&
+          typeof card.cardExpiry === 'string' &&
+          'cardCvc' in card &&
+          typeof card.cardCvc === 'string'
+        )
+      },
+      required: true,
+    },
+    handlers: {
+      type: Object,
+      default: () => ({
+        cancelHandler: () => {},
+        saveCard: () => {},
+      }),
+    },
   },
-  card: {
-    type: Object,
-    default: () => ({
-      cardNumber: '',
+  setup(props) {
+    // setup() receives props as the first argument.
+    onActivated(() => {
+      console.log('SETUP PROPS', props)
+    })
+    // console.log('SETUP PROPS', props)
+
+    const title = ref(props.title)
+    const cardId = ref(props.card?.cardId)
+    const cardBrand = ref(props.card?.cardBrand)
+    const cardName = ref(props.card?.cardName)
+    const cardNumber = ref(props.card?.cardNumber)
+    const cardExpiry = ref(props.card?.cardExpiry)
+    const cardCvc = ref(props.card?.cardCvc)
+    const unmaskedCardNumber = ref('')
+
+    const error = ref({
       cardName: '',
+      cardNumber: '',
       cardExpiry: '',
       cardCvc: '',
-      cardBrand: '',
-    }),
-  },
-  handlers: {
-    type: Object,
-    default: () => ({
-      cancelHandler: () => {},
-      saveCard: () => {},
-    }),
-  },
-})
+    })
+    const cardBrands = ref([
+      'fa6-brands:cc-visa',
+      'fa6-brands:cc-mastercard',
+      'fa6-brands:cc-amex',
+      'fa6-brands:cc-jcb',
+    ])
+    const cardMask = ref({
+      mask: '0000{ }0000{ }0000{ }0000',
+      // lazy: false,
+    })
+    const cardExpiryMask = ref({
+      mask: 'MM{/}YY',
+      blocks: {
+        MM: {
+          mask: IMask.MaskedRange,
+          from: 1,
+          to: 12,
+        },
+        YY: {
+          mask: IMask.MaskedRange,
+          from: dayjs().format('YY'),
+          to: dayjs().add(10, 'year').format('YY'),
+        },
+      },
+      // lazy: false,
+    })
+    const cardCvcMask = ref({
+      mask: '000',
+      // lazy: false,
+    })
 
-const state = reactive({
-  card: {
-    cardNumber: { number: props.card.cardNumber, error: '' },
-    cardName: { name: props.card.cardName, error: '' },
-    cardExpiry: { expiry: props.card.cardExpiry, error: '' },
-    cardCvc: { cvc: props.card.cardCvc, error: '' },
-    cardBrand: { brand: props.card.cardBrand },
-  },
-})
-
-const cardBrands = [
-  'fa6-brands:cc-visa',
-  'fa6-brands:cc-mastercard',
-  'fa6-brands:cc-amex',
-  'fa6-brands:cc-jcb',
-]
-
-const handleSaveCard = () => {
-  console.log('saving')
-  console.log(state.card)
-  // Call the function passed from the parent component
-  props.handlers.saveCard({
-    cardBrand: state.card.cardBrand.brand,
-    cardNumber: state.card.cardNumber.number,
-    cardName: state.card.cardName.name,
-    cardExpiry: state.card.cardExpiry.expiry,
-    cardCvc: state.card.cardCvc.cvc,
-  })
-}
-
-watch(
-  state.card,
-  (newVal) => {
-    const number = newVal.cardNumber.number
-    // console.log('card changed:', newVal)
-
-    // Check the card brand
-    if (number.startsWith('4')) {
-      state.card.cardBrand.brand = 'visa'
-    } else if (number.startsWith('5')) {
-      state.card.cardBrand.brand = 'mastercard'
-    } else if (number.startsWith('3')) {
-      state.card.cardBrand.brand = 'amex'
-    } else if (number.startsWith('35')) {
-      state.card.cardBrand.brand = 'jcb'
-    } else {
-      state.card.cardBrand.brand = 'unknown'
+    return {
+      title,
+      cardId,
+      cardBrand,
+      cardName,
+      cardNumber,
+      cardExpiry,
+      cardCvc,
+      unmaskedCardNumber,
+      cardBrands,
+      cardMask,
+      cardExpiryMask,
+      cardCvcMask,
+      error,
     }
   },
-  { deep: true }
-)
+  methods: {
+    onAccept(e) {
+      // console.log('onAccept', e)
+      const value = e.detail.value
+      const unmaskedValue = e.detail.unmaskedValue
+      console.log(`onAccept - value: |${value}|`)
+      console.log(`onAccept - unmasked value: |${unmaskedValue}|`)
 
-const isValidCardNumber = (number) => {
-  const cardNumber = number ? number.replace(/\s/g, '') : ''
-  if (cardNumber.length !== 16) {
-    state.card.cardNumber.error = 'Card number must be 16 digits'
-    return false
-  }
+      // Let's store both values
+      this.cardNumber = value
+      // Remove spaces from the unmasked value so we can validate it
+      this.unmaskedCardNumber = unmaskedValue.replace(/\s/g, '')
 
-  let sum = 0
-  let shouldDouble = false
-  for (let i = cardNumber.length - 1; i >= 0; i--) {
-    let digit = parseInt(cardNumber.charAt(i), 10)
+      // this.isValidCardNumber()
+    },
+    onComplete(e) {
+      const value = e.detail.value
+      const unmaskedValue = e.detail.unmaskedValue
+      console.log(`onComplete - value: |${value}|`)
+      console.log(`onComplete - unmasked value: |${unmaskedValue}|`)
 
-    if (shouldDouble) {
-      if ((digit *= 2) > 9) digit -= 9
-    }
+      // Validate the card number on completion
+      this.isValidCardNumber()
+      // If the component doesn't receive a car, use the unmasked card number
+      // as the cardId (it contains no spaces).
+      // this.cardId ||= this.unmaskedCardNumber.replace(/\s/g, '')
+    },
+    isValidCardNumber() {
+      const n = this.unmaskedCardNumber
+      console.log(`isValidCardNumber: |${n}| ${n.length}`)
 
-    sum += digit
-    shouldDouble = !shouldDouble
-  }
+      let sum = 0
+      let shouldDouble = false
+      for (let i = n.length - 1; i >= 0; i--) {
+        let digit = parseInt(n.charAt(i), 10)
 
-  if (sum % 10 === 0) {
-    state.card.cardNumber.error = ''
-    return true
-  } else {
-    state.card.cardNumber.error = 'Invalid card number'
-    return false
-  }
-}
+        if (shouldDouble) {
+          if ((digit *= 2) > 9) digit -= 9
+        }
 
-const isValidExpiry = (expiryDate) => {
-  const expiry = expiryDate.replace(/\//g, '')
-  if (expiry.length !== 4) {
-    state.card.cardExpiry.error = 'Expiry must be 4 digits'
-    return false
-  } else {
-    state.card.cardExpiry.error = ''
-    return true
-  }
-}
+        sum += digit
+        shouldDouble = !shouldDouble
+      }
 
-const isValidCvc = (cvc) => {
-  if (cvc.length === 3) {
-    state.card.cardCvc.error = ''
-    return true
-  } else {
-    state.card.cardCvc.error = 'CVC must be 3 digits'
-    return false
-  }
-}
+      console.log(`isValidCardNumber: |${n}| ${n.length}`)
+      if (n.length < 16) {
+        console.log('Card number must be 16 digits')
+        this.error = {
+          ...this.error,
+          cardNumber: 'Card number must be 16 digits',
+        }
+      } else if (sum % 10 !== 0) {
+        this.error = { ...this.error, cardNumber: 'Invalid card number' }
+      } else {
+        this.error = { ...this.error, cardNumber: '' }
+      }
+    },
+    onAcceptExpiry(e) {
+      // console.log('onAcceptExpiry', e)
+      const value = e.detail.value
+      console.log(`onAcceptExpiry - value: |${value}|`)
+      this.cardExpiry = value
+    },
+    isValidExpiry() {
+      const n = this.cardExpiry.replace('/', '')
+      console.log(`isValidExpiry: |${n}| ${n.length}`)
+      if (n.length !== 4) {
+        this.error = {
+          ...this.error,
+          cardExpiry: 'Expiry must be 4 digits (MM/YY)',
+        }
+      } else {
+        this.error = { ...this.error, cardExpiry: '' }
+      }
+    },
+    onAcceptCvc(e) {
+      // console.log('onAcceptCvc', e)
+      const value = e.detail.value
+      console.log(`onAcceptCvc - value: |${value}|`)
+      this.cardCvc = value
+    },
+    isValidCvc() {
+      const n = this.cardCvc.replace('_', '')
+      console.log(`isValidCvc: |${n}| ${n.length}`)
+      if (n.length !== 3) {
+        this.error = { ...this.error, cardCvc: 'CVC must be 3 digits' }
+      } else {
+        this.error = { ...this.error, cardCvc: '' }
+      }
+    },
+    handleSaveCard() {
+      console.log('saving')
+      if (
+        this.error.cardNumber ||
+        this.error.cardExpiry ||
+        this.error.cardCvc
+      ) {
+        console.log('Cannot save card')
+        // Close the modal
+        this.$props.handlers.cancelHandler()
+        // Early return without saving the card
+        return
+      }
 
-const disableSaveBtn = () => {
-  return (
-    !isValidCardNumber(state.card.cardNumber.number) ||
-    !isValidExpiry(state.card.cardExpiry.expiry) ||
-    !isValidCvc(state.card.cardCvc.cvc)
-  )
-}
+      // Call the function passed from the parent component
+      this.$props.handlers.saveCard(
+        {
+          cardId: this.cardId,
+          cardBrand: this.cardBrand,
+          cardNumber: this.cardNumber,
+          cardName: this.cardName,
+          cardExpiry: this.cardExpiry,
+          cardCvc: this.cardCvc,
+        },
+        this.cardId
+      )
+    },
+  },
+  directives: {
+    imask: IMaskDirective,
+  },
+  watch: {
+    unmaskedCardNumber(newVal) {
+      const number = this.unmaskedCardNumber
+      console.log('card changed:', newVal)
 
-// CARD NUMBER HANDLERS
-const handleCardNumberKeydown = (event) => {
-  const noWhiteSpace = state.card.cardNumber.number.replace(/\s/g, '')
-  const regex = /^\d+$/
-
-  const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight']
-
-  // Clear the whitespace from the card number
-  // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
-  if (noWhiteSpace.length >= 16 && !allowedKeys.includes(event.key)) {
-    event.preventDefault()
-  } else if (!allowedKeys.includes(event.key) && !regex.test(event.key)) {
-    // Check if the entered string contains only digits
-    // Prevent non-numeric input
-    event.preventDefault()
-  }
-}
-
-const handleCardNumberInput = (event) => {
-  console.log('card number input:', event.target.value)
-  // Remove spaces from the card number
-  let noWhiteSpace = event.target.value.replace(/\s/g, '')
-
-  // // Add a space after every 4 digits
-  state.card.cardNumber.number = noWhiteSpace.replace(/(.{4})(?=\d)/g, '$1 ')
-
-  if (noWhiteSpace.length === 16) {
-    isValidCardNumber()
-  }
-}
-
-const handleCardExpiryKeydown = (event) => {
-  console.log('card number keydown:', event.key)
-  const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight']
-
-  // Clear the whitespace from the card number
-  const content = state.card.cardExpiry.expiry.replace(/\//g, '')
-  console.log('content keydown:', content)
-  // Prevent input when the entered string contains 16 digits and the key pressed is not a backspace
-  const regex = /^\d+$/
-  // Prevent non-numeric input
-  if (!regex.test(event.key) && !allowedKeys.includes(event.key)) {
-    event.preventDefault()
-  } else if (content.length === 0 && parseInt(event.key) > 3) {
-    event.preventDefault()
-  } else if (
-    content.length === 1 &&
-    parseInt(content + event.key) > 31 &&
-    !allowedKeys.includes(event.key)
-  ) {
-    event.preventDefault()
-  } else if (
-    content.length === 2 &&
-    !regex.test(event.key) &&
-    !allowedKeys.includes(event.key)
-  ) {
-    event.preventDefault()
-  } else if (
-    content.length === 3 &&
-    !regex.test(event.key) &&
-    !allowedKeys.includes(event.key)
-  ) {
-    event.preventDefault()
-  } else if (content.length >= 4 && !allowedKeys.includes(event.key)) {
-    event.preventDefault()
-  }
-}
-
-const handleCardExpiryInput = (event) => {
-  console.log('card number input:', event.target.value)
-  // Remove spaces from the card number
-  let noWhiteSpace = event.target.value.replace(/\s/g, '')
-
-  // Add a slash after every 2 digits
-  state.card.cardExpiry.expiry = noWhiteSpace.replace(/(\d{2})(?=\d)/g, '$1/')
-}
-
-const handleCardCvcKeydown = (event) => {
-  const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight']
-
-  console.log('card cvc keydown:', event.key)
-  // Prevent input when the entered string contains 3 digits and the key pressed is not a backspace
-  if (event.target.value.length >= 3 && !allowedKeys.includes(event.key)) {
-    event.preventDefault()
-  }
+      // Check the card brand
+      if (number.startsWith('4')) {
+        this.cardBrand = 'visa'
+      } else if (number.startsWith('5')) {
+        this.cardBrand = 'mastercard'
+      } else if (number.startsWith('3')) {
+        this.cardBrand = 'amex'
+      } else if (number.startsWith('35')) {
+        this.cardBrand = 'jcb'
+      } else {
+        this.cardBrand = 'unknown'
+      }
+    },
+  },
+  watch: {
+    card(newVal) {
+      console.log('card changed:', newVal)
+      this.cardId = newVal.cardId
+      this.cardBrand = newVal.cardBrand
+      this.cardName = newVal.cardName
+      this.cardNumber = newVal.cardNumber
+      this.cardExpiry = newVal.cardExpiry
+      this.cardCvc = newVal.cardCvc
+    },
+  },
 }
 </script>
 
 <template>
-  <section class="modal-card">
-    <header>
-      <h4>{{ props.title }}</h4>
-
-      <div class="icons">
-        <Icon v-for="brand in cardBrands" :name="brand" />
-      </div>
-    </header>
-
-    <div class="modal-content">
-      <div class="card-number">
-        <label for="card-number">Card Number</label>
-        <input
-          id="card-number"
-          type="text"
-          placeholder="1234 5678 9012 3456"
-          name="card-number"
-          required
-          autocomplete="off"
-          :value="state.card.cardNumber.number"
-          @input="handleCardNumberInput"
-          @keydown="handleCardNumberKeydown"
-          @blur="isValidCardNumber(state.card.cardNumber.number)"
-        />
-        <span class="error">{{ state.card.cardNumber.error }}</span>
-      </div>
-
-      <div class="card-name">
-        <label for="card-name">Name on Card</label>
-        <input
-          id="card-name"
-          type="text"
-          placeholder="Your name on the card"
-          name="card-name"
-          required
-          autocomplete="off"
-          v-model="state.card.cardName.name"
-          @blur="
-            state.card.cardName.error = state.card.cardName.name
-              ? ''
-              : 'Name is required'
-          "
-        />
-        <span class="error">{{ state.card.cardName.error }}</span>
-      </div>
-
-      <div class="expiry-code">
-        <div class="expiry">
-          <label for="expiry">Expiry date</label>
-          <input
-            id="expiry"
-            type="text"
-            placeholder="01 / 11"
-            name="expiry"
-            required
-            autocomplete="off"
-            :value="state.card.cardExpiry.expiry"
-            @input="handleCardExpiryInput"
-            @keydown="handleCardExpiryKeydown"
-            @blur="isValidExpiry(state.card.cardExpiry.expiry)"
-          />
-          <span class="error">{{ state.card.cardExpiry.error }}</span>
-        </div>
-
-        <div class="cvc">
-          <label for="cvc">CVC</label>
-          <input
-            id="cvc"
-            type="text"
-            placeholder="123"
-            name="cvd"
-            required
-            autocomplete="off"
-            :value="state.card.cardCvc.cvc"
-            @input="state.card.cardCvc.cvc = $event.target.value"
-            @keydown="handleCardCvcKeydown"
-            @blur="isValidCvc(state.card.cardCvc.cvc)"
-          />
-          <span class="error">{{ state.card.cardCvc.error }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="btn-box">
-      <button class="btn btn-cancel" @click="props.handlers.cancelHandler">
-        Cancel
-      </button>
-      <button
-        class="btn"
-        @click="handleSaveCard"
-        :disabled="disableSaveBtn()"
+  <ClientOnly>
+    <Teleport to="body">
+      <section
+        class="modal"
+        :class="{ open: modalOpen }"
+        :modalOpen="modalOpen"
       >
-        Save
-      </button>
-    </div>
-  </section>
+        <section class="modal-card">
+          <header>
+            <h4>{{ title }}</h4>
+
+            <div class="icons">
+              <Icon v-for="brand in cardBrands" :name="brand" />
+            </div>
+          </header>
+
+          <div class="modal-content">
+            <div class="card-number">
+              <label for="card-number">Card Number</label>
+              <input
+                name="card-number"
+                :value="cardNumber"
+                v-imask="cardMask"
+                @accept="onAccept"
+                @complete="onComplete"
+                placeholder="1234 5678 9012 3456"
+                @blur="isValidCardNumber"
+              />
+              <span class="error">{{ error?.cardNumber }}</span>
+            </div>
+
+            <div class="card-name">
+              <label for="card-name">Name on Card</label>
+              <input
+                name="card-name"
+                type="text"
+                placeholder="Your name on the card"
+                required
+                autocomplete="off"
+                v-model="cardName"
+                @blur="error.cardName = cardName ? '' : 'Name is required'"
+              />
+              <span class="error">{{ error?.cardName }}</span>
+            </div>
+
+            <div class="expiry-code">
+              <div class="expiry">
+                <label for="expiry">Expiry date</label>
+                <input
+                  name="expiry"
+                  placeholder="01/11"
+                  required
+                  autocomplete="off"
+                  :value="cardExpiry"
+                  v-imask="cardExpiryMask"
+                  @accept="onAcceptExpiry"
+                  @complete="isValidExpiry"
+                  @blur="isValidExpiry"
+                />
+                <span class="error">{{ error?.cardExpiry }}</span>
+              </div>
+
+              <div class="cvc">
+                <label for="cvc">CVC</label>
+                <input
+                  name="cvc"
+                  type="text"
+                  placeholder="123"
+                  required
+                  autocomplete="off"
+                  :value="cardCvc"
+                  v-imask="cardCvcMask"
+                  @accept="onAcceptCvc"
+                  @complete="isValidCvc"
+                  @blur="isValidCvc"
+                />
+                <span class="error">{{ error?.cardCvc }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-box">
+            <button class="btn btn-cancel" @click="handlers.cancelHandler">
+              Cancel
+            </button>
+            <button class="btn" @click="handleSaveCard">Save</button>
+          </div>
+        </section>
+      </section>
+    </Teleport>
+  </ClientOnly>
 </template>
 
 <style lang="scss" scoped>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s ease-in-out;
+  background-color: var(--color-bg-modal);
+  color: white;
+}
+
+.modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+
 .modal-card {
   font-family: 'Inter', sans-serif;
   background-color: rgb(var(--color-bg));

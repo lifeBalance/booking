@@ -5,8 +5,19 @@ const props = defineProps({
   editCard: Function,
 })
 const emits = defineEmits(['selectCard'])
-const { cardBrand, cardNumber, cardExpiry } = props.card
+// const { cardId, cardBrand, cardNumber, cardExpiry } = props.card
 console.table(props.card)
+
+const card = ref(props.card)
+
+// Watch for changes in props.card and update card accordingly
+watch(
+  () => props.card,
+  (newCard) => {
+    card.value = newCard
+  },
+  { deep: true }
+)
 
 const hideDigits = (cardNumber, numCharsToHide) => {
   // Split string into array
@@ -23,29 +34,31 @@ const hideDigits = (cardNumber, numCharsToHide) => {
   return masked.join('')
 }
 
-const iconName = (cardBrand) => {
-  if (cardBrand === 'visa') return 'fa6-brands:cc-visa'
-  else if (cardBrand === 'mastercard') return 'fa6-brands:cc-mastercard'
-  else if (cardBrand === 'jcb') return 'fa6-brands:cc-jcb'
-  else if (cardBrand === 'amex') return 'fa6-brands:cc-amex'
+const iconName = (brand) => {
+  if (brand === 'visa') return 'fa6-brands:cc-visa'
+  else if (brand === 'mastercard') return 'fa6-brands:cc-mastercard'
+  else if (brand === 'jcb') return 'fa6-brands:cc-jcb'
+  else if (brand === 'amex') return 'fa6-brands:cc-amex'
   else return 'ic:baseline-credit-card'
 }
 </script>
 
 <template>
   <section class="card-method">
-    <div class="card-details" @click="emits('selectCard', cardNumber)">
-      <h3><Icon :name="iconName(cardBrand)" />{{ cardBrand }}</h3>
+    <div class="card-details" @click="emits('selectCard', card?.cardId)">
+      <h3><Icon :name="iconName(card?.cardBrand)" />{{ card?.cardBrand }}</h3>
       <p>
-        <span v-html="hideDigits(cardNumber, 12)"></span> ({{ cardExpiry }})
+        <span v-html="hideDigits(card?.cardNumber, 12)"></span> ({{
+          card?.cardExpiry
+        }})
       </p>
     </div>
 
     <div class="btn-box">
-      <button class="edit" @click="props.editCard(props.card.cardNumber)">
+      <button class="edit" @click="props.editCard(card)">
         <Icon class="icon" name="ph:pencil" />
       </button>
-      <button class="delete" @click="props.deleteCard(props.card.cardNumber)">
+      <button class="delete" @click="props.deleteCard(card.cardId)">
         <Icon class="icon" name="ph:trash" />
       </button>
     </div>
@@ -100,7 +113,7 @@ const iconName = (cardBrand) => {
       background-color: transparent;
       color: rgb(var(--color-text-2));
       transition: all 0.3s ease;
-      
+
       .icon {
         font-size: 1.2rem;
         color: rgb(var(--color-text-2));

@@ -5,63 +5,76 @@ import { useUserStore } from '~/stores'
 const userStore = useUserStore()
 const router = useRouter()
 
-// Get the user's login status as computed property (see comments in ModalNav.vue)
-const isLoggedIn = computed(() => userStore.isLoggedIn())
-console.log('armory page - isLoggedIn', isLoggedIn.value)
+onMounted(() => {
+  console.log('Payment mounted')
 
-if (!isLoggedIn.value) {
-  router.push('/login')
-}
+  // Get the user's login status as computed property (see comments in ModalNav.vue)
+  const isLoggedIn = computed(() => userStore.isLoggedIn())
+  console.log('armory page - isLoggedIn', isLoggedIn.value)
 
-// Edit/Add card modal
-const modalName = ref('')
+  // Redirect to login page if user is not logged in
+  if (!isLoggedIn.value) {
+    router.push('/login')
+  }
+})
 
-const loading = ref(false)
-const paymentConfirmation = ref(false)
-
-let cards = ref([
-  {
-    cardBrand: 'visa',
-    cardNumber: '1234 4321 5678 1122',
-    cardName: 'John Doe',
-    cardExpiry: '08/28',
-    cardCvc: '059',
-  },
-  {
-    cardBrand: 'mastercard',
-    cardNumber: '1234 4321 5678 3344',
-    cardName: 'John Doe',
-    cardExpiry: '05/29',
-    cardCvc: '059',
-  },
-])
-let editedCard = ref(null)
+const cardNumberNoSpaces = (n) => n.replace(/\s/g, '')
+const state = reactive({
+  loading: false,
+  cards: [
+    {
+      cardBrand: 'visa',
+      cardNumber: '1234 4321 5678 1122',
+      cardName: 'John Doe',
+      cardExpiry: '08/28',
+      cardCvc: '059',
+    },
+    {
+      cardBrand: 'mastercard',
+      cardNumber: '1234 4321 5678 3344',
+      cardName: 'John Doe',
+      cardExpiry: '05/29',
+      cardCvc: '059',
+    },
+  ].map((card) => {
+    return { ...card, cardId: cardNumberNoSpaces(card.cardNumber) }
+  }),
+  cardModal: false,
+  editedCard: {},
+  paymentConfirmation: false,
+})
 
 const otherMethods = [
   { brand: 'MobilePay', details: 'Pay with the MobilePay app' },
   { brand: 'PayTrail', details: 'Pay with the PayTrail app' },
 ]
 
-const deleteCard = (number) => {
-  console.log('delete card', number)
-  cards.value = cards.value.filter((item) => item.cardNumber !== number)
-  console.log('cards:', cards)
+const deleteCard = (cardId) => {
+  console.log('delete card', cardId) // testing
+  state.cards = state.cards.filter((item) => {
+    return item.cardId !== cardId
+  })
+  console.log('cards:', state.cards)
 }
 
-const editCard = (cardNumber) => {
-  console.log('edit card:', cardNumber)
-  editedCard.value = cards.value.find((item) => item.cardNumber === cardNumber)
-  modalName.value = 'editCard'
+const editCard = (card) => {
+  console.log('edit card:', card) // testing
+  // Set the card to be edited
+  state.editedCard = { ...card }
+  // and open the modal
+  state.cardModal = true
+  console.log('edited card:', state.editedCard) // testing
 }
 
 const handleCloseCardModal = () => {
   console.log('payment: close modal')
-  modalName.value = ''
+  // Close the modal
+  state.cardModal = false
+  state.editedCard = {}
   document.body.style.overflow = 'auto' // Allow scrolling
-  if (editedCard.value) {
-    editedCard.value = null
-  } else if (paymentConfirmation.value) {
-    paymentConfirmation.value = false
+
+  if (state.paymentConfirmation) {
+    state.paymentConfirmation = false
     // Redirect to home page
     router.push('/')
   }
@@ -69,37 +82,64 @@ const handleCloseCardModal = () => {
 
 const handleSelectPayment = (paymentMethod) => {
   console.log('selected payment:', paymentMethod)
-  loading.value = true // set loading state to mimic backend payment processing
+  state.loading = true // set loading state to mimic backend payment processing
   document.body.style.overflow = 'hidden' // When modal is up, avoid scrolling
 
   setTimeout(() => {
-    loading.value = false
-    paymentConfirmation.value = true
+    state.loading = false
+    state.paymentConfirmation = true
   }, 2500)
 }
 
 const handleAddCard = () => {
   console.log('add card')
   // modalOpen.value = true
-  modalName.value = 'addCard'
+  state.cardModal = true
+  state.editedCard = {}
 }
 
-const saveCard = (card) => {
-  console.log('saving card', card)
+// This method is used for saving a card (either new or edited)
+const saveCard = (card, cardId) => {
+  console.log(`saving card: ${JSON.stringify(card)}, cardId: ${cardId}`)
 
-  cards.value.push(card)
-  // Close the modal when added
-  modalName.value = ''
-  if (editedCard.value) {
-    // Update the card
-    cards.value = cards.value.map((item) => {
-      if (item.cardNumber === editedCard.value.cardNumber) {
-        return card
+  const cardIds = state.cards.map((item) => item.cardId)
+
+  if (
+    !card?.cardNumber?.length ||
+    !card?.cardName?.length ||
+    !card?.cardExpiry?.length ||
+    !card?.cardCvc?.length
+  ) {
+    console.log('invalid card: can NOT save!')
+  } else if (!cardId) {
+    // If the user is ADDING a card, check if the card already exists
+    if (cardIds.includes(cardId)) {
+      console.log('card already exists:', cardId)
+    } else {
+      state.cards = [...state.cards, card]
+    }
+  } else if (cardId) {
+    // If the user is EDITING a card, update the card
+    console.log('editing card:', cardId)
+    const newCards = []
+    for (let existingCard of state.cards) {
+      // Traverse the array, and replace the card with the new details
+      if (existingCard.cardId === cardId) {
+        console.log('replacing card:', cardId)
+        newCards.push(card)
+      } else {
+        console.log('adding card:', cardId)
+        newCards.push(existingCard)
       }
-      return item
-    })
-    editedCard.value = null
+    }
+    // New array (should trigger reactivity)
+    state.cards = newCards
+    console.log('new cards:', state.cards)
   }
+
+  // Reset the modal and edited card
+  state.cardModal = false
+  state.editedCard = {}
 }
 </script>
 
@@ -113,14 +153,15 @@ const saveCard = (card) => {
       <h2><Icon name="ic:baseline-credit-card" /> Payment Methods</h2>
 
       <PaymentMethod title="Credit / Debit">
-        <p class="no-cards" v-if="cards.length === 0">
+        <p class="no-cards" v-if="state.cards.length === 0">
           You haven't added any Card
         </p>
         <div v-else>
           <CardPayment
-            v-for="(card, idx) in cards"
+            v-for="(card, idx) in state.cards"
+            :key="card.cardId"
             :card="card"
-            :class="{ separator: idx < cards.length - 1 }"
+            :class="{ separator: idx < state.cards.length - 1 }"
             :deleteCard="deleteCard"
             :editCard="editCard"
             @selectCard="handleSelectPayment"
@@ -146,33 +187,28 @@ const saveCard = (card) => {
       </PaymentMethod>
     </div>
 
-    <Modal :modalOpen="modalName !== ''" @closeModal="handleCloseCardModal">
-      <ModalAddEditCard
-        v-if="modalName === 'addCard'"
-        title="Add New Credit / Debit Card"
-        :card="{
-          cardNumber: '',
-          cardName: '',
-          cardExpiry: '',
-          cardCvc: '',
-          cardBrand: '',
-        }"
-        :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
-      />
+    <!-- <Modal :modalOpen="state.cardModal" @closeModal="handleCloseCardModal"> -->
+    <ModalAddEditCard
+      :modalOpen="state.cardModal"
+      @closeModal="handleCloseCardModal"
+      :title="
+        state.editedCard?.cardId
+          ? 'Edit Credit / Debit Card'
+          : 'Add New Credit / Debit Card'
+      "
+      :card="state.editedCard"
+      :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
+    />
+    <!-- </Modal> -->
 
-      <ModalAddEditCard
-        v-else-if="modalName === 'editCard'"
-        title="Edit Credit / Debit Card"
-        :card="editedCard"
-        :handlers="{ cancelHandler: handleCloseCardModal, saveCard }"
+    <Modal :modalOpen="state.loading || state.paymentConfirmation">
+      <LoadingModal
+        v-if="state.loading"
+        msg="We're processing your payment..."
       />
-    </Modal>
-
-    <Modal :modalOpen="loading || paymentConfirmation">
-      <LoadingModal v-if="loading" msg="We're processing your payment..." />
 
       <PaymentConfirmation
-        v-else-if="paymentConfirmation"
+        v-else-if="state.paymentConfirmation"
         :closeModal="handleCloseCardModal"
       />
     </Modal>
