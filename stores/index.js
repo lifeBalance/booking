@@ -18,7 +18,7 @@ export const useUserStore = defineStore(
 
     // For login
     const login = (email, password) => {
-      // console.log('login sum biatch:', email, password) // 
+      console.log('login sum biatch:', email, password) // 
       
       if (user.value.email === '') {
         return false
