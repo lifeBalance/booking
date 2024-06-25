@@ -173,7 +173,10 @@ const closeModalHandler = () => {
           @blur="() => validateField('fullName', form.fullName)"
         />
 
-        <div class="errors">
+        <div
+          class="errors"
+          :class="{ active: formError?.fullName?._errors?.length > 0 }"
+        >
           <p class="error" v-for="error in formError?.fullName?._errors">
             {{ error }}
           </p>
@@ -189,7 +192,10 @@ const closeModalHandler = () => {
           @blur="() => validateField('email', form.email)"
         />
 
-        <div class="errors">
+        <div
+          class="errors"
+          :class="{ active: formError?.email?._errors?.length > 0 }"
+        >
           <p class="error" v-for="error in formError?.email?._errors">
             {{ error }}
           </p>
@@ -205,7 +211,10 @@ const closeModalHandler = () => {
           @blur="() => validateField('password', form.password)"
         />
 
-        <div class="errors">
+        <div
+          class="errors"
+          :class="{ active: formError?.password?._errors?.length > 0 }"
+        >
           <p class="error" v-for="error in formError?.password?._errors">
             {{ error }}
           </p>
@@ -221,7 +230,10 @@ const closeModalHandler = () => {
           @blur="() => validateField('confirmPassword', form.confirmPassword)"
         />
 
-        <div class="errors">
+        <div
+          class="errors"
+          :class="{ active: formError?.confirmPassword?._errors?.length > 0 }"
+        >
           <p class="error" v-for="error in formError?.confirmPassword?._errors">
             {{ error }}
           </p>
@@ -320,23 +332,33 @@ const closeModalHandler = () => {
       color: red;
       font-size: 0.8rem;
     }
+    // Apply transition when errors show up (not when they disappear though)
+    transition: all 3s ease;
+    max-height: 0;
+    opacity: 0;
   }
 
-  .full-name,
-  .email {
-    height: 6rem;
-    // border: 1px solid yellow;
+  .errors.active {
+    max-height: 6rem;
+    opacity: 1;
   }
 
-  .password {
-    height: 10rem;
-    // border: 1px solid green;
-  }
+  // .full-name,
+  // .email {
+  //   // height: 6rem;
+  //   // border: 1px solid yellow;
+  // }
 
-  .confirm-password {
-    height: 8rem;
-    // border: 1px solid yellow;
-  }
+  // .password {
+  //   // height: 10rem;
+  //   // border: 1px solid green;
+  //   transition: all 0.3s ease-in-out;
+  // }
+
+  // .confirm-password {
+  //   // height: 8rem;
+  //   // border: 1px solid yellow;
+  // }
 
   .other-options {
     .forgot-password {
