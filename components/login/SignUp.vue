@@ -263,6 +263,8 @@ const closeModalHandler = () => {
         v-else-if="confirmationEmailModal"
         :closeModalHandler="closeModalHandler"
         title="Congratulations! 🎉"
+        line1="You have successfully created an account."
+        line2="Please check your email for the confirmation link."
       />
     </Modal>
   </section>

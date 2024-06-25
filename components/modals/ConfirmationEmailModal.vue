@@ -1,5 +1,10 @@
 <script setup>
-const { closeModalHandler, title } = defineProps(['closeModalHandler', 'title'])
+const { closeModalHandler, title } = defineProps([
+  'closeModalHandler',
+  'title',
+  'line1',
+  'line2',
+])
 </script>
 
 <template>
@@ -7,8 +12,8 @@ const { closeModalHandler, title } = defineProps(['closeModalHandler', 'title'])
     <div class="modal-content">
       <h4>{{ title }}</h4>
       <p class="content">
-        You have successfully created an account. <br />
-        Please check your email for a confirmation link.
+        {{ line1 }} <br />
+        {{ line2 }}
       </p>
     </div>
     <div class="btn-box">
