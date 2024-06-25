@@ -1,8 +1,76 @@
-<script setup>
+<script setup lang="ts">
+import { z } from 'zod'
+
+const router = useRouter()
+
 const { switchAccessType } = defineProps(['switchAccessType'])
 
 const handleSwitchAccessType = (accessType) => {
   switchAccessType(accessType)
+}
+
+// Let's define a reactive reference for our form data.
+const form = ref({
+  email: '',
+})
+
+const formSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address' }),
+})
+
+type TFormSchema = z.infer<typeof formSchema>
+
+const formError = ref<z.ZodFormattedError<TFormSchema>>(null)
+
+// Modals
+const loading = ref(false)
+const confirmationEmailModal = ref(false)
+
+function validateForm() {
+  // Validate the field
+  const result = formSchema.safeParse(form.value)
+  console.log('form.value', form.value)
+  console.log('result', result)
+
+  if (!result.success) {
+    const errors = result.error.format() || []
+    console.log('errors', errors)
+
+    formError.value = errors
+  } else {
+    console.log('form is valid')
+
+    formError.value = null
+  }
+}
+
+function submit() {
+  // Validate ALL the form fields (use formSchema).
+  const result = formSchema.safeParse(form.value)
+
+  if (!result.success) {
+    const errors = result.error.format() || []
+    console.log('reset errors', errors)
+
+    formError.value = errors
+    // Early return
+    return
+  } else {
+    // set loading state to mimic backend signup processing
+    loading.value = true
+
+    // When modal is up, avoid scrolling
+    document.body.style.overflow = 'hidden'
+
+    // Simulate a backend signup process
+    setTimeout(() => {
+      // Turn off the loading state
+      loading.value = false
+
+      // Open confirmation email modal
+      confirmationEmailModal.value = true
+    }, 2500)
+  }
 }
 </script>
 
@@ -10,12 +78,28 @@ const handleSwitchAccessType = (accessType) => {
   <section class="reset">
     <h2>reset your password</h2>
 
-    <div class="email">
-      <label for="email">Email</label>
-      <input type="email" id="email" />
-    </div>
+    <form @submit.prevent="onSubmit">
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          name="email"
+          v-model="form.email"
+          @blur="validateForm"
+        />
 
-    <button>Reset Password</button>
+        <div
+          class="errors"
+          :class="{ active: formError?.email?._errors?.length > 0 }"
+        >
+          <p class="error" v-for="error in formError?.email?._errors">
+            {{ error }}
+          </p>
+        </div>
+      </div>
+    </form>
+
+    <button @click="submit">Reset Password</button>
 
     <div class="other-options">
       <div class="no-account">
@@ -29,6 +113,24 @@ const handleSwitchAccessType = (accessType) => {
       </div>
     </div>
   </section>
+
+  <Modal :modalOpen="loading || confirmationEmailModal">
+    <LoadingModal v-if="loading" msg="Wait a second please..." />
+
+    <ConfirmationEmailModal
+      v-else-if="confirmationEmailModal"
+      :closeModalHandler="
+        () => {
+          confirmationEmailModal = false
+          // Redirect to home page
+          router.push('/')
+        }
+      "
+      title="Congratulations! 🎉"
+      line1="You have successfully reset your password."
+      line2="Check your email for the reset link."
+    />
+  </Modal>
 </template>
 
 <style lang="scss" scoped>
@@ -100,7 +202,7 @@ const handleSwitchAccessType = (accessType) => {
     text-align: center;
     display: inline-block;
     text-decoration: none;
-    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-size: clamp(1.2rem, 1vw, 2rem);
     font-weight: 500;
     transition: all 0.3s ease-in-out;
 
@@ -109,6 +211,28 @@ const handleSwitchAccessType = (accessType) => {
       background-color: rgba(var(--color-accent-1), 0.2);
       scale: 1.01;
     }
+  }
+
+  .errors {
+    margin-top: 0.4rem;
+    margin-left: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    p {
+      color: red;
+      font-size: 0.8rem;
+    }
+    // Apply transition when errors show up (not when they disappear though)
+    transition: all 0.3s ease;
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .errors.active {
+    max-height: 6rem;
+    opacity: 1;
   }
 }
 </style>
