@@ -333,7 +333,7 @@ const closeModalHandler = () => {
       font-size: 0.8rem;
     }
     // Apply transition when errors show up (not when they disappear though)
-    transition: all 3s ease;
+    transition: all .3s ease;
     max-height: 0;
     opacity: 0;
   }
