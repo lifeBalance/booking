@@ -7,13 +7,15 @@ const userStore = useUserStore()
 
 const { switchAccessType } = defineProps(['switchAccessType'])
 
-// Let's define a reactive reference for our form data.
-const form = ref({
+const formInitialState = {
   fullName: '',
   email: '',
   password: '',
   confirmPassword: '',
-})
+}
+
+// Let's define a reactive reference for our form data.
+const form = ref(formInitialState)
 
 const formSchema = z.object({
   fullName: z
@@ -37,26 +39,30 @@ const formSchema = z.object({
 
 // In order to get the validateField function to work, we need to create a
 // second PARTIAL schema based on the first one, and add refine there.
-const refinedFormSchema = formSchema.partial().refine(
-  (data) => {
-    // IMPORTANT: my goal is to FAIL validation when the password and
-    // confirmPassword fields are not equal, so I have to return true
-    // when they are equal, to cause validation fail (bit counterintuitive).
-    return data.password === data.confirmPassword
-  },
-  {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  }
-)
+const refinedFormSchema = formSchema
+  .pick({ password: true, confirmPassword: true })
+  .refine(
+    (data) => {
+      console.log('data', data)
+
+      // IMPORTANT: my goal is to FAIL validation when the password and
+      // confirmPassword fields are not equal, so I have to return true
+      // when they are equal, to cause validation fail (bit counterintuitive).
+      return data.password === data.confirmPassword
+    },
+    {
+      message: "Passwords don't match",
+      path: ['confirmPassword'],
+    }
+  )
 
 // Let's infer the type of our form from the schema.
-type TFormSchema = z.infer<typeof formSchema>
+type TFormSchema = z.infer<typeof refinedFormSchema>
 
 // Let's define a reactive reference to our form errors,
 // based on the type of the form schema.
 // const formError = ref<z.ZodFormattedError<TFormSchema | null>>(null)
-const formError = ref<z.ZodFormattedError<TFormSchema>>({})
+const formError = ref<z.ZodFormattedError<TFormSchema>>(null)
 
 const handleSwitchAccessType = (accessType) => {
   switchAccessType(accessType)
@@ -68,25 +74,26 @@ const validateField = (fieldName: string, value) => {
   // errors for the specific field, smashing the other ones.
   const errorsBackup = formError.value
 
-  // Validate the "blurred" field value.
-  const result = refinedFormSchema.safeParse({ [fieldName]: value })
+  // Depending on the input field, we'll validate against one or another schema.
+  const result =
+    fieldName === 'confirmPassword'
+      ? refinedFormSchema.safeParse({ [fieldName]: value })
+      : formSchema.safeParse({ [fieldName]: value })
 
   if (!result.success) {
-    console.log('lala', result.error.format())
-
     // If validation fails, safely update formError with the errors for this field
-    const errors = result.error.format()[fieldName]?._errors || []
+    const fieldErrors = result.error.format()[fieldName]?._errors || []
 
-    console.log('errors', errors)
+    console.log('fieldErrors:', fieldErrors)
 
     // Update only the errors for the specific field, preserving other field errors
     formError.value = {
       ...errorsBackup,
-      [fieldName]: { _errors: errors },
+      [fieldName]: { _errors: fieldErrors },
     }
   } else {
     // If validation succeeds, clear any errors ONLY for this field.
-    formError.value[fieldName] = { _errors: [] }
+    formError.value[fieldName] = formError.value[fieldName] = []
   }
 }
 
@@ -95,36 +102,45 @@ const loading = ref(false)
 const confirmationEmailModal = ref(false)
 
 function signUp() {
-  // Validate all the form fields.
-  const result = refinedFormSchema.safeParse(form.value)
+  // Validate ALL the form fields (use formSchema).
+  const result = formSchema.safeParse(form.value)
 
   if (!result.success) {
-    console.log('lala', result.error.format())
-
     const errors = result.error.format() || []
-    console.log('errors', errors)
+    console.log('signup errors', errors)
 
     formError.value = errors
     // Early return
     return
+  } else {
+    formError.value = null
+
+    console.log(
+      'user:',
+      form.value.fullName,
+      form.value.email,
+      form.value.password
+    )
+
+    // Save the user data in the store
+    userStore.setUser({
+      name: form.value.fullName,
+      email: form.value.email,
+      password: form.value.password,
+      isLoggedIn: false,
+    })
   }
 
-  // set loading state to mimic backend payment processing
+  // set loading state to mimic backend signup processing
   loading.value = true
 
   // When modal is up, avoid scrolling
   document.body.style.overflow = 'hidden'
 
+  // Simulate a backend signup process
   setTimeout(() => {
-    // Oh, we're done!
+    // Turn off the loading state
     loading.value = false
-
-    userStore.setUser({
-      name: form.fullName,
-      email: form.email,
-      password: form.password,
-      isLoggedIn: false,
-    })
 
     // Open confirmation email modal
     confirmationEmailModal.value = true
