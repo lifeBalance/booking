@@ -1,6 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useUserStore } from '~/stores'
 import { z } from 'zod'
+
+const { $toast } = useNuxtApp()
 
 const router = useRouter()
 
@@ -57,6 +59,9 @@ function loginHandler(credentials) {
     console.log('isLoggedIn', userStore.isLoggedIn()) // testing
     if (isLoggedIn) {
       router.push('/')
+    } else {
+      console.log('Wrong credentials, login failed!')
+      $toast.warning('Wrong credentials, login failed!')
     }
   } else {
     console.log('Form is invalid!')
@@ -157,6 +162,7 @@ const validateField = (fieldName: string, value) => {
 
       <div class="no-account">
         <p>Don't have an account yet?</p>
+
         <p class="sign-up" @click="handleSwitchAccessType('signUp')">
           Sign up Here!
         </p>
@@ -241,7 +247,7 @@ const validateField = (fieldName: string, value) => {
       font-size: 0.8rem;
     }
     // Apply transition when errors show up (not when they disappear though)
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     max-height: 0;
     opacity: 0;
   }
@@ -268,9 +274,9 @@ const validateField = (fieldName: string, value) => {
 
     .no-account {
       display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding-top: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: 1.8rem;
 
       p:first-child {
         color: rgb(var(--color-text-1));
@@ -312,6 +318,17 @@ const validateField = (fieldName: string, value) => {
     &:active {
       background-color: rgba(var(--color-accent-1), 0.2);
       scale: 1.01;
+    }
+  }
+}
+
+@media (min-width: 480px) {
+  .login {
+    .other-options {
+      .no-account {
+        flex-direction: row;
+        gap: 1rem;
+      }
     }
   }
 }
