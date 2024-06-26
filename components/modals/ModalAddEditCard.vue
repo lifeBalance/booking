@@ -249,8 +249,6 @@ export default {
         this.cardBrand = 'unknown'
       }
     },
-  },
-  watch: {
     card(newVal) {
       console.log('card changed:', newVal)
       this.cardId = newVal.cardId
