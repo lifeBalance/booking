@@ -57,43 +57,52 @@ const refinedFormSchema = formSchema
   )
 
 // Let's infer the type of our form from the schema.
-type TFormSchema = z.infer<typeof refinedFormSchema>
+type TFormError = z.inferFormattedError<typeof formSchema>
 
 // Let's define a reactive reference to our form errors,
 // based on the type of the form schema.
 // const formError = ref<z.ZodFormattedError<TFormSchema | null>>(null)
-const formError = ref<z.ZodFormattedError<TFormSchema>>(null)
+const formError = ref<TFormError>({ _errors: [] })
 
-const handleSwitchAccessType = (accessType) => {
+const handleSwitchAccessType = (accessType: string) => {
   switchAccessType(accessType)
 }
 
-const validateField = (fieldName: string, value) => {
+const validateField = (
+  fieldName: keyof typeof formInitialState,
+  value: string
+) => {
   // Backup the current form errors. That's necessary because once the
   // partial schema is parsed, the formError will be updated with only the
   // errors for the specific field, smashing the other ones.
-  const errorsBackup = formError.value
+  const errorsBackup: TFormError = formError.value
 
-  // Depending on the input field, we'll validate against one or another schema.
-  const result =
-    fieldName === 'confirmPassword'
-      ? refinedFormSchema.safeParse({ [fieldName]: value })
-      : formSchema.safeParse({ [fieldName]: value })
+  if (fieldName === 'confirmPassword') {
+    const result = refinedFormSchema.safeParse({ [fieldName]: value })
+    if (!result.success) {
+      const formattedErrors = result.error.format()
 
-  if (!result.success) {
-    // If validation fails, safely update formError with the errors for this field
-    const fieldErrors = result.error.format()[fieldName]?._errors || []
-
-    console.log('fieldErrors:', fieldErrors)
-
-    // Update only the errors for the specific field, preserving other field errors
-    formError.value = {
-      ...errorsBackup,
-      [fieldName]: { _errors: fieldErrors },
+      formError.value = {
+        ...errorsBackup,
+        [fieldName]: formattedErrors[fieldName] || { _errors: [] },
+      }
+    } else {
+      // If validation succeeds, clear any errors ONLY for this field.
+      formError.value[fieldName] = { _errors: [] }
     }
   } else {
-    // If validation succeeds, clear any errors ONLY for this field.
-    formError.value[fieldName] = formError.value[fieldName] = []
+    const result = formSchema.safeParse({ [fieldName]: value })
+    if (!result.success) {
+      const formattedErrors = result.error.format()
+
+      formError.value = {
+        ...errorsBackup,
+        [fieldName]: formattedErrors[fieldName] || { _errors: [] },
+      }
+    } else {
+      // If validation succeeds, clear any errors ONLY for this field.
+      formError.value[fieldName] = { _errors: [] }
+    }
   }
 }
 
@@ -113,7 +122,7 @@ function signUp() {
     // Early return
     return
   } else {
-    formError.value = null
+    formError.value = { _errors: [] }
 
     console.log(
       'user:',
@@ -163,7 +172,7 @@ const closeModalHandler = () => {
   <section class="sign-up">
     <h2>create a new account</h2>
 
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="signUp">
       <div class="field full-name">
         <label for="full-name">Full Name</label>
         <input
@@ -175,7 +184,11 @@ const closeModalHandler = () => {
 
         <div
           class="errors"
-          :class="{ active: formError?.fullName?._errors?.length > 0 }"
+          :class="{
+            active:
+              formError?.fullName?._errors &&
+              formError?.fullName?._errors?.length > 0,
+          }"
         >
           <p class="error" v-for="error in formError?.fullName?._errors">
             {{ error }}
@@ -194,7 +207,11 @@ const closeModalHandler = () => {
 
         <div
           class="errors"
-          :class="{ active: formError?.email?._errors?.length > 0 }"
+          :class="{
+            active:
+              formError?.email?._errors &&
+              formError?.email?._errors?.length > 0,
+          }"
         >
           <p class="error" v-for="error in formError?.email?._errors">
             {{ error }}
@@ -213,7 +230,11 @@ const closeModalHandler = () => {
 
         <div
           class="errors"
-          :class="{ active: formError?.password?._errors?.length > 0 }"
+          :class="{
+            active:
+              formError?.password?._errors &&
+              formError?.password?._errors?.length > 0,
+          }"
         >
           <p class="error" v-for="error in formError?.password?._errors">
             {{ error }}
@@ -232,7 +253,11 @@ const closeModalHandler = () => {
 
         <div
           class="errors"
-          :class="{ active: formError?.confirmPassword?._errors?.length > 0 }"
+          :class="{
+            active:
+              formError?.confirmPassword?._errors &&
+              formError?.confirmPassword?._errors?.length > 0,
+          }"
         >
           <p class="error" v-for="error in formError?.confirmPassword?._errors">
             {{ error }}
@@ -240,7 +265,7 @@ const closeModalHandler = () => {
         </div>
       </div>
 
-      <button @click="signUp">Submit</button>
+      <button>Submit</button>
     </form>
 
     <div class="other-options">
@@ -335,7 +360,7 @@ const closeModalHandler = () => {
       font-size: 0.8rem;
     }
     // Apply transition when errors show up (not when they disappear though)
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     max-height: 0;
     opacity: 0;
   }
