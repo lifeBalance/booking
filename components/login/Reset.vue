@@ -5,7 +5,7 @@ const router = useRouter()
 
 const { switchAccessType } = defineProps(['switchAccessType'])
 
-const handleSwitchAccessType = (accessType) => {
+const handleSwitchAccessType = (accessType: string) => {
   switchAccessType(accessType)
 }
 
@@ -20,7 +20,7 @@ const formSchema = z.object({
 
 type TFormSchema = z.infer<typeof formSchema>
 
-const formError = ref<z.ZodFormattedError<TFormSchema>>(null)
+const formError = ref<z.ZodFormattedError<TFormSchema>>({ _errors: [] })
 
 // Modals
 const loading = ref(false)
@@ -40,7 +40,7 @@ function validateForm() {
   } else {
     console.log('form is valid')
 
-    formError.value = null
+    formError.value = { _errors: [] }
   }
 }
 
@@ -78,7 +78,7 @@ function submit() {
   <section class="reset">
     <h2>reset your password</h2>
 
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="submit">
       <div class="field">
         <label for="email">Email</label>
         <input
@@ -90,7 +90,11 @@ function submit() {
 
         <div
           class="errors"
-          :class="{ active: formError?.email?._errors?.length > 0 }"
+          :class="{
+            active:
+              formError?.email?._errors &&
+              formError?.email?._errors?.length > 0,
+          }"
         >
           <p class="error" v-for="error in formError?.email?._errors">
             {{ error }}
