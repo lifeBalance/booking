@@ -12,15 +12,17 @@ const userStore = useUserStore()
 
 const { switchAccessType } = defineProps(['switchAccessType'])
 
-const handleSwitchAccessType = (accessType) => {
+const handleSwitchAccessType = (accessType: string) => {
   switchAccessType(accessType)
 }
 
-// Let's define a reactive reference for our form data.
-const form = ref({
+const formInitialState = {
   email: '',
   password: '',
-})
+}
+// Let's define a reactive reference for our form data.
+const form = ref(formInitialState)
+
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
   password: z
@@ -37,18 +39,20 @@ const formSchema = z.object({
 
 // Let's infer the type of our form from the schema.
 type TFormSchema = z.infer<typeof formSchema>
+type TFormError = z.inferFormattedError<typeof formSchema>
 
 // Let's define a reactive reference to our form errors,
 // based on the type of the form schema.
 // const formError = ref<z.ZodFormattedError<TFormSchema | null>>(null)
-const formError = ref<z.ZodFormattedError<TFormSchema>>({})
+const formError = ref<TFormError>({ _errors: [] })
 
-function loginHandler(credentials) {
+function submitHandler(credentials: { email: string; password: string }) {
   // Validate the data before submitting the form
   const valid = formSchema.safeParse(form.value)
   if (valid.success) {
     console.log('Form is valid!')
-    formError.value = null
+    // Clear any previous errors
+    formError.value = { _errors: [] }
 
     const { email, password } = credentials
     console.log('credentials', email, password) // testing
@@ -71,7 +75,10 @@ function loginHandler(credentials) {
   }
 }
 
-const validateField = (fieldName: string, value) => {
+const validateField = (
+  fieldName: keyof typeof formInitialState,
+  value: string
+) => {
   console.log(`fieldName: ${fieldName}, value: ${value}`) // testing;
 
   // Validate the "blurred" field value.
@@ -100,7 +107,11 @@ const validateField = (fieldName: string, value) => {
   <section class="login">
     <h2>login into your account</h2>
 
-    <form @submit.prevent="onSubmit">
+    <form
+      @submit.prevent="
+        submitHandler({ email: form.email, password: form.password })
+      "
+    >
       <div class="email">
         <div class="field">
           <label for="email">Email</label>
@@ -113,7 +124,11 @@ const validateField = (fieldName: string, value) => {
 
           <div
             class="errors"
-            :class="{ active: formError?.email?._errors?.length > 0 }"
+            :class="{
+              active:
+                formError?.email?._errors &&
+                formError?.email?._errors?.length > 0,
+            }"
           >
             <p class="error" v-for="error in formError?.email?._errors">
               {{ error }}
@@ -134,7 +149,11 @@ const validateField = (fieldName: string, value) => {
 
           <div
             class="errors"
-            :class="{ active: formError?.password?._errors?.length > 0 }"
+            :class="{
+              active:
+                formError?.password?._errors &&
+                formError?.password?._errors?.length > 0,
+            }"
           >
             <p class="error" v-for="error in formError?.password?._errors">
               {{ error }}
@@ -143,16 +162,7 @@ const validateField = (fieldName: string, value) => {
         </div>
       </div>
 
-      <button
-        @click="
-          loginHandler({
-            email: form.email,
-            password: form.password,
-          })
-        "
-      >
-        Log in
-      </button>
+      <button>Log in</button>
     </form>
 
     <div class="other-options">
