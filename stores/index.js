@@ -61,7 +61,7 @@ export const useUserStore = defineStore(
   },
   {
     persist: {
-      storage: persistedState.localStorage,
+      storage: typeof window !== 'undefined' ? localStorage : undefined,
     },
   }
 )
