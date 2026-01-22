@@ -45,8 +45,8 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/': { prerender: true },
-    '/book': { ssr: false },
-    '/armory': { ssr: false },
-    '/payment': { ssr: false },
+    '/book': { prerender: false },
+    '/armory': { prerender: false },
+    '/payment': { prerender: false },
   },
 })
