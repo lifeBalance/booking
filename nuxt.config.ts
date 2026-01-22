@@ -39,12 +39,13 @@ export default defineNuxtConfig({
   },
   ssr: true,
   nitro: {
-    // prerender: {
-    //   routes: ['/'],
-    // },
+    prerender: {
+      crawlLinks: false,
+      routes: [],
+    },
   },
   routeRules: {
-    '/': { prerender: true },
+    '/': { prerender: false },
     '/book': { prerender: false },
     '/armory': { prerender: false },
     '/payment': { prerender: false },
