@@ -40,14 +40,10 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
-      crawlLinks: false,
-      routes: [],
+      ignore: ['/armory', '/payment', '/login', '/book'],
     },
   },
   routeRules: {
-    '/': { prerender: false },
-    '/book': { prerender: false },
-    '/armory': { prerender: false },
-    '/payment': { prerender: false },
+    '/': { prerender: true },
   },
 })
