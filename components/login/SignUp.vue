@@ -136,7 +136,7 @@ function signUp() {
       name: form.value.fullName,
       email: form.value.email,
       password: form.value.password,
-      isLoggedIn: false,
+      isLoggedIn: true,
     })
   }
 
@@ -163,8 +163,8 @@ const closeModalHandler = () => {
   // Allow scrolling
   document.body.style.overflow = 'auto'
 
-  // Redirect to home page
-  router.push('/')
+  // Redirect to booking page
+  router.push('/book')
 }
 </script>
 

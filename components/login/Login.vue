@@ -62,7 +62,7 @@ function submitHandler(credentials: { email: string; password: string }) {
 
     console.log('isLoggedIn', userStore.isLoggedIn()) // testing
     if (isLoggedIn) {
-      router.push('/')
+      router.push('/book')
     } else {
       console.log('Wrong credentials, login failed!')
       $toast.warning('Wrong credentials, login failed!')
