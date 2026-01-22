@@ -5,6 +5,10 @@ Here’s a **next-level README** with **badges, marketing polish, clean UX langu
 
 # 🏨 Booking App
 
+⚠️ Please, make sure the volume of your speakers is not too loud 🚀
+
+![loud](./loud.jpeg)
+
 ### *A sleek, zero-backend booking experience powered by Nuxt 3*
 
 ![Nuxt](https://img.shields.io/badge/Nuxt-3-00DC82?logo=nuxtdotjs\&logoColor=white)
