@@ -1,13 +1,10 @@
-Alright — **full drip mode activated** 😎🔥
-Here’s a **next-level README** with **badges, marketing polish, clean UX language, and open-source vibes**.
-
----
-
 # 🏨 Booking App
 
 ⚠️ Please, make sure the volume of your speakers is not too loud 🚀
 
 ![loud](./loud.jpeg)
+
+🚀 [See it live here](https://lifebalance.github.io/booking) 👈 👍
 
 ### *A sleek, zero-backend booking experience powered by Nuxt 3*
 
